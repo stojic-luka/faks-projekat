@@ -1,0 +1,51 @@
+﻿<UserControl
+    x:Class="DesktopClient.src.Views.Controls.Tabs.ToolsTab"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DesktopClient.src.Views.Controls.Tabs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolTabControls="clr-namespace:DesktopClient.src.Views.Controls.Tabs.ToolsTabControls">
+    <ScrollViewer Background="#E0E0E0">
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="300" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <toolTabControls:StopwatchPanel
+                Grid.Row="0"
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+
+            <StackPanel
+                Grid.Row="0"
+                Grid.Column="1"
+                Orientation="Horizontal">
+                <Separator Background="Gray" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            </StackPanel>
+
+            <toolTabControls:RandomRecipePanel
+                Grid.Row="0"
+                Grid.Column="2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
+
+            <StackPanel
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                HorizontalAlignment="Stretch">
+                <Separator Background="Gray" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            </StackPanel>
+
+            <toolTabControls:FavoriteRecipesPanel Grid.Row="2" Grid.ColumnSpan="3" />
+        </Grid>
+    </ScrollViewer>
+</UserControl>

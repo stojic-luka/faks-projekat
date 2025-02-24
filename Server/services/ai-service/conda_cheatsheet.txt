@@ -1,0 +1,5 @@
+1. create env from "environment.yml"
+    conda env create --prefix ./env -f environment.yml
+
+2. activate env from local folder
+    conda activate ./env
