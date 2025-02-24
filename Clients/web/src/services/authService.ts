@@ -3,7 +3,7 @@ import { AuthCredentials, AuthResponse, RefreshResponse } from "../types/authTyp
 import { ApiResponse, ApiResponseData } from "../types/responseTypes";
 
 export const loginUser = async (credentials: AuthCredentials) => {
-  const response = await authenticatedAxios.post<ApiResponse<AuthResponse>>("/api/login", credentials, {
+  const response = await authenticatedAxios.post<ApiResponse<AuthResponse>>("/api/v1/login", credentials, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -13,7 +13,7 @@ export const loginUser = async (credentials: AuthCredentials) => {
 };
 
 export const signupUser = async (credentials: AuthCredentials) => {
-  const response = await authenticatedAxios.post<ApiResponse<AuthResponse>>("/api/signup", credentials, {
+  const response = await authenticatedAxios.post<ApiResponse<AuthResponse>>("/api/v1/signup", credentials, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -23,7 +23,7 @@ export const signupUser = async (credentials: AuthCredentials) => {
 };
 
 export const refreshToken = async () => {
-  const response = await authenticatedAxios.get<ApiResponse<RefreshResponse>>("/api/refresh", {
+  const response = await authenticatedAxios.get<ApiResponse<RefreshResponse>>("/api/v1/refresh", {
     headers: {
       "Content-Type": "application/json",
     },

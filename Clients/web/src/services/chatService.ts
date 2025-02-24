@@ -4,7 +4,7 @@ import { ApiResponse, ApiResponseData } from "../types/responseTypes";
 
 export const getAiResponse = async (userInput: UserChatRequestBody, signal: AbortSignal): Promise<ApiResponseData<ChatResponse>> => {
   const response = await authenticatedAxios.post<ApiResponse<ChatResponse>>(
-    "/chat",
+    "/api/v1/chat",
     { message: userInput.message, streamed: false },
     {
       headers: {
@@ -22,7 +22,7 @@ export const getStreamedAiResponse = async function* (
   token: string,
   signal: AbortSignal
 ): AsyncGenerator<string, void, unknown> {
-  const response = await fetch(import.meta.env.VITE_API_URL + "/chat", {
+  const response = await fetch(import.meta.env.VITE_API_URL + "/api/v1//chat", {
     method: "POST",
     headers: {
       Authentication: `Bearer ${token}`,

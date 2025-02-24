@@ -26,7 +26,7 @@ export const getRandomRecipe = async (): Promise<ApiResponseData<Recipe>> => {
 
 export const getRecipesByIngredients = async (filters: RecipeFilterArguments): Promise<ApiResponseData<Recipe[]>> => {
   const response = await authenticatedAxios.post<ApiResponse<Recipe[]>>(
-    "/recipe",
+    "/api/v1/recipe",
     { ingredients: filters.ingredients },
     {
       headers: {
@@ -43,7 +43,7 @@ export const getRecipesByIngredients = async (filters: RecipeFilterArguments): P
 };
 
 export const getFavoriteRecipes = async (pagination: Pagination): Promise<ApiResponseData<Recipe[]>> => {
-  const response = await authenticatedAxios.get<ApiResponse<Recipe[]>>("/recipe/favorite", {
+  const response = await authenticatedAxios.get<ApiResponse<Recipe[]>>("/api/v1/recipe/favorite", {
     headers: {
       "Content-Type": "application/json",
     },

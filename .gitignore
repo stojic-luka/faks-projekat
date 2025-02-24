@@ -3,8 +3,6 @@
 .vs
 .vscode
 
-*.pem
-
 Ollama/data/*
 !Ollama/data/.gitkeep
 
@@ -14,7 +12,6 @@ Database/mongo/import/*
 !Database/mongo/import/.gitkeep
 Database/mongo/logs/*
 !Database/mongo/logs/.gitkeep
-Database/mongo/mongo.env
 
 Clients/desktop/**/*.suo
 Clients/desktop/**/*.user
@@ -69,4 +66,4 @@ Server/**/src/**/application.yml
 Server/**/src/**/secrets.yml
 
 Server/services/ai-service/**/__pycache__
-Server/services/ai-service/**/ai_service_env/*
+Server/services/ai-service/**/ai_service_env
