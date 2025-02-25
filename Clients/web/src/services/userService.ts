@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import authenticatedAxios from "../api/authenticatedAxios";
 import { UserResponse } from "../types/authTypes";
 import { ApiResponse, ApiResponseData } from "../types/responseTypes";
@@ -11,3 +12,18 @@ export const fetchUser = async () => {
 
   return response.data as ApiResponseData<UserResponse>;
 };
+=======
+import authenticatedAxios from "../api/authenticatedAxios";
+import { UserResponse } from "../types/authTypes";
+import { ApiResponse, ApiResponseData } from "../types/responseTypes";
+
+export const fetchUser = async () => {
+  const response = await authenticatedAxios.get<ApiResponse<UserResponse>>("/api/v1/self", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response.data as ApiResponseData<UserResponse>;
+};
+>>>>>>> Stashed changes
