@@ -36,8 +36,9 @@ services:
     image: mongo:8.0
     restart: always
     ports:
-      - "3306:3306"
+      - "27027:27027"
     env_file: ./Database/mongo/mongo.env
+    command: ["--port", "27027"]
     volumes:
       - mongo_data:/data/db
       - ./Database/mongo/logs:/logs

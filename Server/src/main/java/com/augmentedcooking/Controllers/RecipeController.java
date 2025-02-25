@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.augmentedcooking.Exceptions.BaseResponseException;
@@ -48,12 +49,8 @@ public class RecipeController {
 
     @GetMapping(path = "/random", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRandomRecipe() {
-        try {
-            Recipe recipe = recipeService.getRandomRecipe();
-            return ResponseWrapper.success(new RecipeResponseBody(recipe));
-        } catch (Exception e) {
-            throw (BaseResponseException) new NotFoundException();
-        }
+        Recipe recipe = recipeService.getRandomRecipe();
+        return ResponseWrapper.success(recipe == null ? null : new RecipeResponseBody(recipe));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -71,5 +68,15 @@ public class RecipeController {
                 .collect(Collectors.toList());
 
         return ResponseWrapper.success(responseBody);
+    }
+
+    @GetMapping(path = "/favorite", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getFavoriteRecipe(UsernamePasswordAuthenticationToken authentication) {
+        try {
+            Recipe recipe = recipeService.getFavoriteRecipe();
+            return ResponseWrapper.success(new RecipeResponseBody(recipe));
+        } catch (Exception e) {
+            throw (BaseResponseException) new NotFoundException();
+        }
     }
 }

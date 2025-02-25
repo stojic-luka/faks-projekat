@@ -6,12 +6,12 @@
 Ollama/data/*
 !Ollama/data/.gitkeep
 
-Database/mongo/data/*
 !Database/mongo/data/.gitkeep
-Database/mongo/import/*
+Database/mongo/data/*
 !Database/mongo/import/.gitkeep
-Database/mongo/logs/*
+Database/mongo/import/*
 !Database/mongo/logs/.gitkeep
+Database/mongo/logs/*
 
 Clients/desktop/**/*.suo
 Clients/desktop/**/*.user
@@ -62,8 +62,6 @@ Clients/web/**/stats.html
 Clients/web/**/.eslintcache
 
 Server/**/target
-Server/**/src/**/application.yml
-Server/**/src/**/secrets.yml
 
 Server/services/ai-service/**/__pycache__
 Server/services/ai-service/**/ai_service_env

@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: augmentedcooking
+
+  config:
+    import: optional:secrets.yml
+
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+    banner-mode: "off"
+
+  datasource:
+    # url: jdbc:mongodb://localhost:27017/Recipes
+    # username: postgres
+    # password: 123
+    # driver-class-name: org.mongodb.Driver
+    # initialization-mode: always
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 600000
+
+  # jpa:
+  #   hibernate:
+  #     ddl-auto: update
+  #   show-sql: true
+  #   open-in-view: false
+  #   database-platform: org.hibernate.dialect.PostgreSQLDialect
+  #   properties:
+  #     hibernate:
+  #       format_sql: true
+
+  server:
+    port: 8080
+
+  security:
+    user:
+      name: admin
+      password: admin
+
+  data:
+    mongodb:
+      uri: mongodb://user:password@172.24.254.6:27027/recipes?authSource=admin
+      host: 172.24.254.6
+      port: 27027
+      username: user
+      password: password
+      database: recipes
+      authentication-database: admin
+
+  jackson:
+    serialization:
+      indent-output: true
+
+jwt:
+  access:
+    privateKey: MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgOrVlRAW6Bq+LRmPjmR7iO61feVBUV+BYxv+ZM64SmXehRANCAAQGwtAOslEw2ZctC+PqedBkTm8liswMBi6hN5tm8hJGwLVpKroC68rcKtuRrYt7VBgSg2E12Dn2tvexWC13W7dm
+    publicKey: MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEBsLQDrJRMNmXLQvj6nnQZE5vJYrMDAYuoTebZvISRsC1aSq6AuvK3Crbka2Le1QYEoNhNdg59rb3sVgtd1u3Zg==
+
+  refresh:
+    privateKey: MIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIBXBJ0TovlpwKR/PKjA2ZzU+qFhdBsQw6mSbH7kmmuBMG2gWAG6j9FOlVGcSdVTZT7Bj0NgQGVaZiwbfEwVPqmicKhgYkDgYYABAE266dcQZ3493oS876x3zpJLb8wIgZI3nPqfeqpWKyhLcwgEssFey3NzxtD/bMqGZR2WIRWOnlf6wdh3/ozltCRvQGHBTuBiz25Zvqft2nVx0SNj7HOajuPYA+csi9dzn+kjrufyTekBwH5hcMNQ/MMw/p3WKIjeyRBQW+Zg5dZLNjgXA==
+    publicKey: MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBNuunXEGd+Pd6EvO+sd86SS2/MCIGSN5z6n3qqVisoS3MIBLLBXstzc8bQ/2zKhmUdliEVjp5X+sHYd/6M5bQkb0BhwU7gYs9uWb6n7dp1cdEjY+xzmo7j2APnLIvXc5/pI67n8k3pAcB+YXDDUPzDMP6d1iiI3skQUFvmYOXWSzY4Fw=
+
+  # access:
+  #   privateKey: classpath:secret/ecc-access-private-256.pem
+  #   publicKey: classpath:secret/ecc-access-public-256.pem
+
+  # refresh:
+  #   privateKey: classpath:secret/ecc-refresh-private-512.pem
+  #   publicKey: classpath:secret/ecc-refresh-public-512.pem
+
+
+logging:
+  level:
+    org.springframework.security.web: DEBUG

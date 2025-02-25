@@ -41,7 +41,8 @@ public class RecipeRepository implements IRecipeRepository {
 
         AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipe", Recipe.class);
 
-        return results.getMappedResults().get(0);
+        List<Recipe> recipes = results.getMappedResults();
+        return recipes.isEmpty() ? null : recipes.get(0);
     }
 
     @Override
