@@ -5,6 +5,10 @@ services:
       context: ./Clients/web
     ports:
       - "5173:80"
+    deploy:
+      resources:
+        limits:
+          memory: 1.5G
     depends_on:
       - spring-server
     networks:
@@ -16,6 +20,10 @@ services:
       context: ./Server
     ports:
       - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
     depends_on:
       - rabbitmq
       - ai-service
@@ -29,10 +37,17 @@ services:
       context: ./Server/services/ai-service
     ports:
       - "5000:5000"
-    networks:
-      - app-network
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          memory: 2G
     depends_on:
       - rabbitmq
+      - ollama
+    networks:
+      - app-network
 
   mongo:
     container_name: MongoDB
@@ -40,8 +55,12 @@ services:
     restart: always
     ports:
       - "27027:27027"
-    env_file: ./Database/mongo/mongo.env
     command: ["--port", "27027"]
+    env_file: ./Database/mongo/mongo.env
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     volumes:
       - mongo_data:/data/db
       - ./Database/mongo/logs:/logs
@@ -56,6 +75,10 @@ services:
       - "5672:5672"
       - "15672:15672"
     env_file: ./Communication/rabbitmq/rabbitmq.env
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     volumes:
       - ./Communication/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - ./Communication/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
