@@ -1,0 +1,53 @@
+{
+  "rabbit_version": "3.9.13",
+  "users": [
+    {
+      "name": "guest",
+      "password_hash": "guest",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "queues": [
+    {
+      "name": "ai_chat_request_queue",
+      "vhost": "/",
+      "durable": true
+    },
+    {
+      "name": "ai_chat_response_queue",
+      "vhost": "/",
+      "durable": true
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "ai_chat_exchange",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true
+    }
+  ],
+  "bindings": [
+    {
+      "source": "ai_chat_exchange",
+      "vhost": "/",
+      "destination": "ai_chat_request_queue",
+      "destination_type": "queue",
+      "routing_key": "ai_chat_routing_key"
+    }
+  ]
+}

@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "recipe_images")
+@Document(collection = "recipeImages")
 public class RecipeImage {
 
     @Id

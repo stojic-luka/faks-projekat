@@ -17,6 +17,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
+      - rabbitmq
       - ai-service
       - mongo
     networks:
@@ -30,6 +31,8 @@ services:
       - "5000:5000"
     networks:
       - app-network
+    depends_on:
+      - rabbitmq
 
   mongo:
     container_name: MongoDB
@@ -45,6 +48,18 @@ services:
       - ./Database/mongo/config:/etc/mongo/
     networks:
       - app-network
+
+  rabbitmq:
+    container_name: RabbitMQ
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file: ./Communication/rabbitmq/rabbitmq.env
+    volumes:
+      - ./Communication/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./Communication/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+    restart: always
 
   ollama:
     container_name: Ollama

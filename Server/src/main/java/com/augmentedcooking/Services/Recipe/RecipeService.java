@@ -1,6 +1,8 @@
 package com.augmentedcooking.Services.Recipe;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +24,17 @@ public class RecipeService implements IRecipeService {
     }
 
     @Override
-    public Recipe getRandomRecipe() {
+    public Optional<Recipe> getRandomRecipe() {
         return recipeRepository.findRandom();
     }
 
     @Override
     public List<Recipe> getRecipesByIngredients(List<String> ingredients, int page, int limit) {
         return recipeRepository.findByIngredients(ingredients, page, limit);
+    }
+
+    @Override
+    public List<Recipe> getUserFavoriteRecipes(String publicId, int page, int limit) {
+        return recipeRepository.findUserFavorites(publicId, page, limit);
     }
 }

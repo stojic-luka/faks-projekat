@@ -26,13 +26,15 @@ public class AuthService implements IAuthService {
     private final IJwtUtils jwtUtils;
 
     @Autowired
-    public AuthService(IUserRepository userRepository, IJwtUtils jwtUtils) {
+    public AuthService(final IUserRepository userRepository, IJwtUtils jwtUtils) {
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
     }
 
     @Override
     public UserTokensDto login(String email, String password) {
+        // TODO: add so user can login with username and email
+
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty())
             throw (BaseResponseException) new UserNotFoundException();

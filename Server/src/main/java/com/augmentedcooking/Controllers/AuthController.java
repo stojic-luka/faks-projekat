@@ -38,7 +38,7 @@ public class AuthController {
     private final IAuthService authService;
 
     @Autowired
-    public AuthController(IAuthService authService) {
+    public AuthController(final IAuthService authService) {
         this.authService = authService;
     }
 
@@ -58,7 +58,7 @@ public class AuthController {
                 throw (BaseResponseException) new InvalidCredentialsException();
 
             UserTokensDto userTokensDto = authService.login(
-                    body.getUsername(),
+                    body.getEmail() != null ? body.getEmail() : body.getUsername(),
                     body.getPassword());
 
             Cookie responseRefreshTokenCookie = new Cookie("refresh-token", userTokensDto.getRefreshToken());
@@ -74,10 +74,10 @@ public class AuthController {
             return ResponseWrapper.success(responseBody);
         } catch (Exception e) {
             if (!(e instanceof BaseResponseException)) {
-                System.err.println(e);
-                for (StackTraceElement element : e.getStackTrace()) {
-                    System.err.println(element);
-                }
+                // System.err.println(e);
+                // for (StackTraceElement element : e.getStackTrace()) {
+                // System.err.println(element);
+                // }
                 throw (BaseResponseException) new InternalServerException();
             }
             throw (BaseResponseException) e;
@@ -100,9 +100,9 @@ public class AuthController {
                 throw (BaseResponseException) new InvalidCredentialsException();
 
             UserTokensDto userTokensDto = authService.signin(
+                    body.getEmail(),
                     body.getUsername(),
-                    body.getPassword(),
-                    body.getEmail());
+                    body.getPassword());
 
             Cookie responseRefreshTokenCookie = new Cookie("refresh-token", userTokensDto.getRefreshToken());
             responseRefreshTokenCookie.setHttpOnly(true);
@@ -117,10 +117,10 @@ public class AuthController {
             return ResponseWrapper.success(responseBody);
         } catch (Exception e) {
             if (!(e instanceof BaseResponseException)) {
-                System.err.println(e);
-                for (StackTraceElement element : e.getStackTrace()) {
-                    System.err.println(element);
-                }
+                // System.err.println(e);
+                // for (StackTraceElement element : e.getStackTrace()) {
+                // System.err.println(element);
+                // }
                 throw (BaseResponseException) new InternalServerException();
             }
             throw (BaseResponseException) e;
@@ -157,10 +157,10 @@ public class AuthController {
             return ResponseWrapper.success(responseBody);
         } catch (Exception e) {
             if (!(e instanceof BaseResponseException)) {
-                System.err.println(e);
-                for (StackTraceElement element : e.getStackTrace()) {
-                    System.err.println(element);
-                }
+                // System.err.println(e);
+                // for (StackTraceElement element : e.getStackTrace()) {
+                // System.err.println(element);
+                // }
                 throw (BaseResponseException) new InternalServerException();
             }
             throw (BaseResponseException) e;

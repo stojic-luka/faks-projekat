@@ -21,7 +21,7 @@ public class JwtSecretsConfig {
     private final JwtSecretProperties jwtSecretProperties;
 
     @Autowired
-    public JwtSecretsConfig(JwtSecretProperties jwtSecretProperties) {
+    public JwtSecretsConfig(final JwtSecretProperties jwtSecretProperties) {
         this.jwtSecretProperties = jwtSecretProperties;
     }
 

@@ -1,14 +1,7 @@
-import json
+import os
 from datetime import datetime, timezone
 
-from app.services import client  # type: ignore
-from app.utils.responses_creator import (
-    create_chat_response,
-    create_chat_response_message,
-    create_chat_streamed_response,
-)
-
-from typing import AsyncIterable, List, Union
+from typing import Any, Coroutine, List, Union
 from openai import AsyncStream
 from openai.types.chat import (
     ChatCompletion,
@@ -18,10 +11,18 @@ from openai.types.chat import (
     ChatCompletionContentPartParam,
 )
 
+from app.services import client  # type: ignore
+from app.types.chat_response import (
+    ChatResponse,
+    ChatResponseMessage,
+    ChatStreamedResponse,
+)
+from app.enum import MessageRoles, ResponseTypes
 
-async def get_streamed_chatbot_response(
-    message: str, image_b64: str | None = None
-) -> AsyncIterable[str]:
+
+def get_streamed_chatbot_response(
+    model: str, message: str, image_b64: str | None = None
+) -> tuple[ChatStreamedResponse, Coroutine[Any, Any, AsyncStream[ChatCompletionChunk]]]:
     user_content: List[ChatCompletionContentPartParam] = [
         {"type": "text", "text": message}
     ]
@@ -44,32 +45,26 @@ async def get_streamed_chatbot_response(
         "content": "You are a helpful assistant that only discusses recipes. Avoid other topics.",
     }
 
-    stream: AsyncStream[ChatCompletionChunk] = await client.chat.completions.create(
-        model="llama3.2",
-        messages=[system_message, user_message],
-        stream=True,
-    )
-
-    yield json.dumps(
-        create_chat_streamed_response(
-            model="llama3.2",
-            role="assistant",
+    return (
+        ChatStreamedResponse(
+            type=ResponseTypes.STREAMED,
+            role=MessageRoles.ASSISTANT,
+            model=model,
             timestamp=str(int(round(datetime.now(timezone.utc).timestamp()))),
             images=[],
             tool_calls=[],
-        )
+        ),
+        client.chat.completions.create(
+            model=model,
+            messages=[system_message, user_message],
+            stream=True,
+        ),
     )
 
-    initial_chunk = await anext(stream, None)
-    if initial_chunk is not None:
-        yield str(initial_chunk.choices[0].delta.content)
 
-    async for chunk in stream:
-        if chunk is not None:
-            yield str(chunk.choices[0].delta.content)
-
-
-async def get_chatbot_response(message: str, image_b64: str | None = None) -> object:
+async def get_chatbot_response(
+    model: str, message: str, image_b64: str | None = None
+) -> ChatResponse:
     user_content: List[ChatCompletionContentPartParam] = [
         {"type": "text", "text": message}
     ]
@@ -93,15 +88,14 @@ async def get_chatbot_response(message: str, image_b64: str | None = None) -> ob
     }
 
     response: ChatCompletion = await client.chat.completions.create(
-        model="llama3.2",
+        model=model,
         messages=[system_message, user_message],
     )
 
-    choice = response.choices[0]
-    message_data = choice.message
-
-    return create_chat_response(
-        model=response.model,
+    return ChatResponse(
+        type=ResponseTypes.COMPLETE,
+        role=MessageRoles.ASSISTANT,
+        model=model,
         timestamp=str(
             int(
                 round(
@@ -109,12 +103,13 @@ async def get_chatbot_response(message: str, image_b64: str | None = None) -> ob
                 )
             )
         ),
-        message=create_chat_response_message(
-            role=message_data.role,
-            content=str(message_data.content),
+        message=ChatResponseMessage(
+            role=response.choices[0].message.role,
+            content=str(response.choices[0].message.content),
             images=[],
             tool_calls=[
-                str(tool_call) for tool_call in (message_data.tool_calls or [])
+                str(tool_call)
+                for tool_call in (response.choices[0].message.tool_calls or [])
             ],
         ),
     )

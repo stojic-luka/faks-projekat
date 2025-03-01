@@ -6,6 +6,7 @@ import LoadingMessageBubble from "./loadingMessage";
 import { useChatSettings } from "../../contexts/useChatSettings";
 import { ChatMessage, ChatResponse, MessageDeliveryStatus, RoleTypes, StreamedChatResponse } from "../../types/chatTypes";
 import { ErrorMessage } from "../shared";
+import { ApiResponseData } from "../../types/responseTypes";
 
 const Chat = () => {
   const { streamResponse, registerClearChatFunction } = useChatSettings();
@@ -84,26 +85,16 @@ const Chat = () => {
 
         botMessageId = null;
       } else {
-        // const responseMessage = response asur ChatResponse;
-        const responseMessage = response as unknown as ChatResponse;
+        const responseMessage = response as unknown as ApiResponseData<ChatResponse>;
         setMessages((prevMessages) => [
           ...prevMessages,
-          // {
-          //   id: responseMessage.data.id,
-          //   role: responseMessage.data.message.role,
-          //   content: "",
-          //   images: responseMessage.data.message.images,
-          //   tool_calls: responseMessage.data.message.tool_calls,
-          //   timestamp: responseMessage.data.timestamp,
-          //   status: MessageDeliveryStatus.DELIVERED,
-          // } as ChatMessage,
           {
-            id: responseMessage.id,
-            role: responseMessage.message.role,
-            content: responseMessage.message.content,
-            images: responseMessage.message.images,
-            tool_calls: responseMessage.message.tool_calls,
-            timestamp: responseMessage.timestamp,
+            id: responseMessage.data.id,
+            role: responseMessage.data.message.role,
+            content: "",
+            images: responseMessage.data.message.images,
+            tool_calls: responseMessage.data.message.tool_calls,
+            timestamp: responseMessage.data.timestamp,
             status: MessageDeliveryStatus.DELIVERED,
           } as ChatMessage,
         ]);

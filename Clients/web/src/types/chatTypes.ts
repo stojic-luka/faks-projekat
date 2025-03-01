@@ -15,18 +15,18 @@ export enum MessageDeliveryStatus {
 }
 
 type WithId = { id: string };
-type WithType = { type: ResponseTypes };
+type WithResponseTypes = { type: ResponseTypes };
 type WithRole = { role: RoleTypes };
 type WithModel = { model: string };
 type WithContent = { content: string };
 type WithTimestamp = { timestamp: number };
 type WithImagesAndToolCalls = { images: string[]; tool_calls: string[] };
 
-export type StreamedChatResponse = WithId & WithType & WithRole & WithModel & WithTimestamp & WithImagesAndToolCalls;
+export type StreamedChatResponse = WithId & WithResponseTypes & WithRole & WithModel & WithTimestamp & WithImagesAndToolCalls;
 // export type StreamedChatResponseChunk = WithType & WithContent & WithDone & WithCreateAt;
 
 export type ChatResponseMessage = WithRole & WithContent & WithImagesAndToolCalls;
-export type ChatResponse = WithId & WithType & WithModel & WithTimestamp & { message: ChatResponseMessage };
+export type ChatResponse = WithId & WithResponseTypes & WithModel & WithTimestamp & { message: ChatResponseMessage };
 
 export type ChatMessage = WithId & WithRole & WithContent & WithImagesAndToolCalls & WithTimestamp & { status: MessageDeliveryStatus };
 

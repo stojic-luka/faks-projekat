@@ -25,7 +25,7 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public Optional<User> createUser(String email, String username, String password) {
-        User user = mongoTemplate.insert(new User(email, username, password));
+        User user = mongoTemplate.insert(new User(email, username, password), "users");
         return Optional.ofNullable(user);
     }
 
@@ -69,7 +69,7 @@ public class UserRepository implements IUserRepository {
         user.setUsername(updatedUser.getUsername());
         user.setEmail(updatedUser.getEmail());
         user.setUpdatedAt(Instant.now().toEpochMilli());
-        mongoTemplate.save(user);
+        mongoTemplate.save(user, "users");
         return true;
     }
 
@@ -81,7 +81,8 @@ public class UserRepository implements IUserRepository {
 
         User user = userOptional.get();
         user.updatePassword(password);
-        mongoTemplate.save(user);
+        user.setUpdatedAt(Instant.now().toEpochMilli());
+        mongoTemplate.save(user, "users");
         return true;
     }
 
@@ -91,7 +92,7 @@ public class UserRepository implements IUserRepository {
         if (userOptional.isEmpty())
             return false;
 
-        mongoTemplate.remove(userOptional.get());
+        mongoTemplate.remove(userOptional.get(), "users");
         return true;
     }
 }

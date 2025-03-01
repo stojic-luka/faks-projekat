@@ -1,6 +1,7 @@
 package com.augmentedcooking.Repositories.Recipe;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -29,20 +30,21 @@ public class RecipeRepository implements IRecipeRepository {
                 skip((long) page * limit),
                 limit(limit));
 
-        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipe", Recipe.class);
+        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipes", Recipe.class);
 
         return results.getMappedResults();
     }
 
-    public Recipe findRandom() {
+    @Override
+    public Optional<Recipe> findRandom() {
         Aggregation aggregation = Aggregation.newAggregation(
                 sample(1),
                 lookup("recipeImages", "recipeImage", "_id", "image"));
 
-        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipe", Recipe.class);
+        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipes", Recipe.class);
 
         List<Recipe> recipes = results.getMappedResults();
-        return recipes.isEmpty() ? null : recipes.get(0);
+        return Optional.ofNullable(recipes.isEmpty() ? null : recipes.get(0));
     }
 
     @Override
@@ -59,7 +61,22 @@ public class RecipeRepository implements IRecipeRepository {
                 skip((long) page * limit),
                 limit(limit));
 
-        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipe", Recipe.class);
+        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipes", Recipe.class);
+        return results.getMappedResults();
+    }
+
+    @Override
+    public List<Recipe> findUserFavorites(String publicId, int page, int limit) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                match(Criteria.where("publicId").is(publicId)),
+                lookup("recipes", "recipeId", "_id", "recipe"),
+                unwind("$recipe"),
+                lookup("recipeImages", "recipe.recipeImage", "_id", "recipe.image"),
+                skip((long) page * limit),
+                limit(limit),
+                project("recipe"));
+
+        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "favoriteRecipes", Recipe.class);
         return results.getMappedResults();
     }
 }

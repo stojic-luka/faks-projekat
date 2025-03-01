@@ -29,7 +29,7 @@ public class ChatController {
     private final IChatService chatService;
 
     @Autowired
-    public ChatController(IChatService chatService) {
+    public ChatController(final IChatService chatService) {
         this.chatService = chatService;
     }
 

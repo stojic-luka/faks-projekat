@@ -1,6 +1,7 @@
 package com.augmentedcooking.Controllers;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class RecipeController {
     private final IRecipeService recipeService;
 
     @Autowired
-    public RecipeController(IRecipeService recipeService) {
+    public RecipeController(final IRecipeService recipeService) {
         this.recipeService = recipeService;
     }
 
@@ -49,8 +50,11 @@ public class RecipeController {
 
     @GetMapping(path = "/random", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getRandomRecipe() {
-        Recipe recipe = recipeService.getRandomRecipe();
-        return ResponseWrapper.success(recipe == null ? null : new RecipeResponseBody(recipe));
+        Optional<Recipe> recipe = recipeService.getRandomRecipe();
+        if (recipe.isEmpty())
+            return ResponseWrapper.success(null);
+
+        return ResponseWrapper.success(new RecipeResponseBody(recipe.get()));
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -71,8 +75,16 @@ public class RecipeController {
     }
 
     @GetMapping(path = "/favorite", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getFavoriteRecipe(UsernamePasswordAuthenticationToken authentication) {
-        Recipe recipe = recipeService.getFavoriteRecipe();
-        return ResponseWrapper.success(new RecipeResponseBody(recipe));
+    public ResponseEntity<?> getFavoriteRecipes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int limit,
+            UsernamePasswordAuthenticationToken authentication) {
+        List<Recipe> recipes = recipeService.getUserFavoriteRecipes(authentication.getName(), page, limit);
+
+        List<RecipeResponseBody> responseBody = recipes.stream()
+                .map(r -> new RecipeResponseBody(r))
+                .collect(Collectors.toList());
+
+        return ResponseWrapper.success(responseBody);
     }
 }
