@@ -20,15 +20,15 @@ type WithRole = { role: RoleTypes };
 type WithModel = { model: string };
 type WithContent = { content: string };
 type WithTimestamp = { timestamp: number };
-type WithImagesAndToolCalls = { images: string[]; tool_calls: string[] };
+type WithImages = { images: string[] };
 
-export type StreamedChatResponse = WithId & WithResponseTypes & WithRole & WithModel & WithTimestamp & WithImagesAndToolCalls;
+export type StreamedChatResponse = WithId & WithResponseTypes & WithRole & WithModel & WithTimestamp & WithImages;
 // export type StreamedChatResponseChunk = WithType & WithContent & WithDone & WithCreateAt;
 
-export type ChatResponseMessage = WithRole & WithContent & WithImagesAndToolCalls;
+export type ChatResponseMessage = WithRole & WithContent & WithImages;
 export type ChatResponse = WithId & WithResponseTypes & WithModel & WithTimestamp & { message: ChatResponseMessage };
 
-export type ChatMessage = WithId & WithRole & WithContent & WithImagesAndToolCalls & WithTimestamp & { status: MessageDeliveryStatus };
+export type ChatMessage = WithId & WithRole & WithContent & WithImages & WithTimestamp & { status: MessageDeliveryStatus };
 
 export interface UserChatRequestBody {
   message: string;

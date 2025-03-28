@@ -13,5 +13,5 @@ public interface IRecipeRepository {
 
     List<Recipe> findByIngredients(List<String> ingredients, int page, int limit);
 
-    List<Recipe> findUserFavorites(String publicId, int page, int limit);
+    List<Recipe> findUserFavorites(String id, int page, int limit);
 }

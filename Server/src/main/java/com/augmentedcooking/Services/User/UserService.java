@@ -1,22 +1,22 @@
 package com.augmentedcooking.Services.User;
 
 import java.util.Optional;
-import java.util.UUID;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.augmentedcooking.Models.Database.User.User;
-import com.augmentedcooking.Repositories.User.UserRepository;
+import com.augmentedcooking.Repositories.User.IUserRepository;
+
+import io.github.thibaultmeyer.cuid.CUID;
 
 @Service
 public class UserService implements IUserService {
 
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
     @Autowired
-    public UserService(final UserRepository userRepository) {
+    public UserService(final IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -26,13 +26,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Optional<User> findUserById(ObjectId id) {
-        return userRepository.findById(id);
-    }
-
-    @Override
-    public Optional<User> findUserByPublicId(String id) {
-        return userRepository.findByPublicId(UUID.fromString(id));
+    public Optional<User> findUserById(String userId) {
+        return userRepository.findById(CUID.fromString(userId));
     }
 
     @Override
@@ -46,18 +41,18 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean updateUserById(ObjectId id, User updatedUser) {
-        return userRepository.updateById(id, updatedUser);
+    public boolean updateUserById(String userId, User updatedUser) {
+        return userRepository.updateById(CUID.fromString(userId), updatedUser);
     }
 
     @Override
-    public boolean updateUserPasswordById(ObjectId id, String password) {
-        return userRepository.updatePasswordById(id, password);
+    public boolean updateUserPasswordById(String userId, String password) {
+        return userRepository.updatePasswordById(CUID.fromString(userId), password);
     }
 
     @Override
-    public boolean deleteUserById(ObjectId id) {
-        return userRepository.deleteById(id);
+    public boolean deleteUserById(String userId) {
+        return userRepository.deleteById(CUID.fromString(userId));
     }
 
 }

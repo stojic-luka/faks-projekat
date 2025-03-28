@@ -39,7 +39,6 @@ const Chat = () => {
         role: RoleTypes.USER,
         content: message,
         images: [],
-        tool_calls: [],
         timestamp: Date.now(),
         status: MessageDeliveryStatus.PENDING,
       };
@@ -63,7 +62,6 @@ const Chat = () => {
               role: RoleTypes.ASSISTANT,
               content: "",
               images: initialChunk.images,
-              tool_calls: initialChunk.tool_calls,
               timestamp: initialChunk.timestamp,
               status: MessageDeliveryStatus.PENDING,
             };
@@ -93,7 +91,6 @@ const Chat = () => {
             role: responseMessage.data.message.role,
             content: "",
             images: responseMessage.data.message.images,
-            tool_calls: responseMessage.data.message.tool_calls,
             timestamp: responseMessage.data.timestamp,
             status: MessageDeliveryStatus.DELIVERED,
           } as ChatMessage,

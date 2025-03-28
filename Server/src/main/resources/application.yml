@@ -11,27 +11,12 @@ spring:
     banner-mode: "off"
 
   datasource:
-    # url: jdbc:mongodb://localhost:27017/Recipes
-    # username: postgres
-    # password: 123
-    # driver-class-name: org.mongodb.Driver
-    # initialization-mode: always
     hikari:
       minimum-idle: 5
       maximum-pool-size: 10
       idle-timeout: 30000
       connection-timeout: 30000
       max-lifetime: 600000
-
-  # jpa:
-  #   hibernate:
-  #     ddl-auto: update
-  #   show-sql: true
-  #   open-in-view: false
-  #   database-platform: org.hibernate.dialect.PostgreSQLDialect
-  #   properties:
-  #     hibernate:
-  #       format_sql: true
 
   server:
     port: 8080
@@ -43,13 +28,19 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://user:password@172.24.254.6:27027/recipes?authSource=admin
-      host: 172.24.254.6
+      uri: mongodb://user:password@172.28.250.126:27027/recipes?authSource=admin
+      host: 172.28.250.126
       port: 27027
       username: user
       password: password
       database: recipes
       authentication-database: admin
+
+  rabbitmq:
+    host: 172.28.250.126
+    port: 5672
+    username: user
+    password: pass
 
   jackson:
     serialization:
@@ -72,6 +63,16 @@ jwt:
   #   privateKey: classpath:secret/ecc-refresh-private-512.pem
   #   publicKey: classpath:secret/ecc-refresh-public-512.pem
 
+rabbitmq:
+  rabbitMQHost: 172.28.250.126
+  rabbitMQPort: 5672
+  rabbitMQUser: user
+  rabbitMQPass: pass
+  exchangeName: ai-chat-exchange
+  requestQueue: ai-request-queue
+  responseQueue: ai-response-queue
+  requestRoutingKey: ai.request
+  responseRoutingKey: ai.response
 
 logging:
   level:

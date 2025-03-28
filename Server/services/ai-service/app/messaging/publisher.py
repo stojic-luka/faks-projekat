@@ -1,8 +1,8 @@
 import pika  # type: ignore
 import logging
-from app.config.rabbitmq import (
+from app.config.rabbitmq import (  # type: ignore
     get_connection,
-    ROUTING_KEY,
+    RESPONSE_ROUTING_KEY,
     RESPONSE_QUEUE,
     EXCHANGE_NAME,
 )
@@ -21,13 +21,13 @@ class RabbitMQPublisher:
     def publish(self, message: str) -> None:
         self.__channel.basic_publish(
             exchange=EXCHANGE_NAME,
-            routing_key=ROUTING_KEY,
+            routing_key=RESPONSE_ROUTING_KEY,
             body=message,
             properties=pika.BasicProperties(
-                delivery_mode=2,  # make message persistent
+                delivery_mode=2,
             ),
         )
-        print("Published response:", message)
+        print("published message: ", message)
 
     def close(self) -> None:
         self.__connection.close()

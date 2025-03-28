@@ -2,9 +2,7 @@ package com.augmentedcooking.Repositories.User;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -12,6 +10,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.augmentedcooking.Models.Database.User.User;
+
+import io.github.thibaultmeyer.cuid.CUID;
 
 @Repository
 public class UserRepository implements IUserRepository {
@@ -30,16 +30,8 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public Optional<User> findById(ObjectId id) {
+    public Optional<User> findById(CUID id) {
         User user = mongoTemplate.findById(id, User.class);
-        return Optional.ofNullable(user);
-    }
-
-    @Override
-    public Optional<User> findByPublicId(UUID id) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("pubId").is(id));
-        User user = mongoTemplate.findOne(query, User.class);
         return Optional.ofNullable(user);
     }
 
@@ -60,7 +52,7 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public boolean updateById(ObjectId id, User updatedUser) {
+    public boolean updateById(CUID id, User updatedUser) {
         Optional<User> userOptional = this.findById(id);
         if (userOptional.isEmpty())
             return false;
@@ -74,7 +66,7 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public boolean updatePasswordById(ObjectId id, String password) {
+    public boolean updatePasswordById(CUID id, String password) {
         Optional<User> userOptional = this.findById(id);
         if (userOptional.isEmpty())
             return false;
@@ -87,7 +79,7 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public boolean deleteById(ObjectId id) {
+    public boolean deleteById(CUID id) {
         Optional<User> userOptional = this.findById(id);
         if (userOptional.isEmpty())
             return false;

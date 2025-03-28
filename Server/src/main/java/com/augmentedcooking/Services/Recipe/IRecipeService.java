@@ -13,5 +13,5 @@ public interface IRecipeService {
 
     List<Recipe> getRecipesByIngredients(List<String> ingredients, int page, int limit);
 
-    List<Recipe> getUserFavoriteRecipes(String publicId, int page, int limit);
+    List<Recipe> getUserFavoriteRecipes(String id, int page, int limit);
 }

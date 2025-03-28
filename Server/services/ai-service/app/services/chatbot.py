@@ -12,19 +12,26 @@ from openai.types.chat import (
 )
 
 from app.services import client  # type: ignore
-from app.types.chat_response import (
+from app.types.response.chat_complete_response import (  # type: ignore
     ChatResponse,
     ChatResponseMessage,
-    ChatStreamedResponse,
+    ChatResponseMessageImage,
 )
-from app.enum import MessageRoles, ResponseTypes
+from app.types.response.chat_streamed_response import (  # type: ignore
+    ChatStreamedMetadataResponse,
+    ChatStreamedMetadataContent,
+)
+from app.enum import MessageRoles, ResponseTypes  # type: ignore
 
 
 def get_streamed_chatbot_response(
-    model: str, message: str, image_b64: str | None = None
-) -> tuple[ChatStreamedResponse, Coroutine[Any, Any, AsyncStream[ChatCompletionChunk]]]:
+    request_id: str, model: str, prompt: str, image_b64: str | None = None
+) -> tuple[
+    ChatStreamedMetadataResponse,
+    Coroutine[Any, Any, AsyncStream[ChatCompletionChunk]],
+]:
     user_content: List[ChatCompletionContentPartParam] = [
-        {"type": "text", "text": message}
+        {"type": "text", "text": prompt}
     ]
 
     if image_b64 is not None:
@@ -46,13 +53,16 @@ def get_streamed_chatbot_response(
     }
 
     return (
-        ChatStreamedResponse(
-            type=ResponseTypes.STREAMED,
-            role=MessageRoles.ASSISTANT,
-            model=model,
-            timestamp=str(int(round(datetime.now(timezone.utc).timestamp()))),
-            images=[],
-            tool_calls=[],
+        ChatStreamedMetadataResponse(
+            request_id=request_id,
+            type=ResponseTypes.STREAMED_METADATA,
+            sequence=0,
+            last_chunk=False,
+            content=ChatStreamedMetadataContent(
+                model=model,
+                role=MessageRoles.ASSISTANT,
+                timestamp=0,
+            ),
         ),
         client.chat.completions.create(
             model=model,
@@ -63,10 +73,10 @@ def get_streamed_chatbot_response(
 
 
 async def get_chatbot_response(
-    model: str, message: str, image_b64: str | None = None
+    request_id: str, model: str, prompt: str, image_b64: str | None = None
 ) -> ChatResponse:
     user_content: List[ChatCompletionContentPartParam] = [
-        {"type": "text", "text": message}
+        {"type": "text", "text": prompt}
     ]
 
     if image_b64 is not None:
@@ -93,6 +103,7 @@ async def get_chatbot_response(
     )
 
     return ChatResponse(
+        request_id=request_id,
         type=ResponseTypes.COMPLETE,
         role=MessageRoles.ASSISTANT,
         model=model,
@@ -104,12 +115,7 @@ async def get_chatbot_response(
             )
         ),
         message=ChatResponseMessage(
-            role=response.choices[0].message.role,
             content=str(response.choices[0].message.content),
             images=[],
-            tool_calls=[
-                str(tool_call)
-                for tool_call in (response.choices[0].message.tool_calls or [])
-            ],
         ),
     )

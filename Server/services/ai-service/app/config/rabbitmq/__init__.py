@@ -9,9 +9,10 @@ RABBITMQ_PORT = int(str(os.getenv("RABBITMQ_PORT")))
 RABBITMQ_USER = os.getenv("RABBITMQ_USER")
 RABBITMQ_PASS = os.getenv("RABBITMQ_PASS")
 EXCHANGE_NAME = os.getenv("EXCHANGE_NAME")
-ROUTING_KEY = os.getenv("ROUTING_KEY")
-RESPONSE_QUEUE = os.getenv("RESPONSE_QUEUE")
 REQUEST_QUEUE = os.getenv("REQUEST_QUEUE")
+REQUEST_ROUTING_KEY = os.getenv("REQUEST_ROUTING_KEY")
+RESPONSE_QUEUE = os.getenv("RESPONSE_QUEUE")
+RESPONSE_ROUTING_KEY = os.getenv("RESPONSE_ROUTING_KEY")
 
 
 def get_connection():
@@ -37,7 +38,7 @@ __all__ = [
     "RABBITMQ_PASS",
     "EXCHANGE_NAME",
     "ROUTING_KEY",
-    "RESPONSE_QUEUE",
     "REQUEST_QUEUE",
+    "RESPONSE_QUEUE",
     "get_connection",
 ]

@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 import com.augmentedcooking.Models.Database.Recipe.Recipe;
+import com.augmentedcooking.Utils.impl.CUIDConverter;
 
 @Repository
 public class RecipeRepository implements IRecipeRepository {
@@ -66,9 +67,9 @@ public class RecipeRepository implements IRecipeRepository {
     }
 
     @Override
-    public List<Recipe> findUserFavorites(String publicId, int page, int limit) {
+    public List<Recipe> findUserFavorites(String id, int page, int limit) {
         Aggregation aggregation = Aggregation.newAggregation(
-                match(Criteria.where("publicId").is(publicId)),
+                match(Criteria.where("_id").is(CUIDConverter.cuidToBytes(id))),
                 lookup("recipes", "recipeId", "_id", "recipe"),
                 unwind("$recipe"),
                 lookup("recipeImages", "recipe.recipeImage", "_id", "recipe.image"),

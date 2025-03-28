@@ -24,7 +24,7 @@ import com.augmentedcooking.Models.Response.Auth.RefreshResponseBody;
 import com.augmentedcooking.Models.Response.Auth.Dto.TokensDto;
 import com.augmentedcooking.Models.Response.Auth.Dto.UserTokensDto;
 import com.augmentedcooking.Services.Auth.IAuthService;
-import com.augmentedcooking.Utils.ValidationUtils;
+import com.augmentedcooking.Utils.impl.ValidationUtils;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,10 +74,10 @@ public class AuthController {
             return ResponseWrapper.success(responseBody);
         } catch (Exception e) {
             if (!(e instanceof BaseResponseException)) {
-                // System.err.println(e);
-                // for (StackTraceElement element : e.getStackTrace()) {
-                // System.err.println(element);
-                // }
+                System.err.println(e);
+                for (StackTraceElement element : e.getStackTrace()) {
+                    System.err.println(element);
+                }
                 throw (BaseResponseException) new InternalServerException();
             }
             throw (BaseResponseException) e;

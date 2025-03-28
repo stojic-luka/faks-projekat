@@ -1,9 +1,9 @@
 {
-  "rabbit_version": "3.9.13",
+  "rabbit_version": "3.8.0",
   "users": [
     {
-      "name": "guest",
-      "password_hash": "guest",
+      "name": "user",
+      "password_hash": "pass",
       "tags": "administrator"
     }
   ],
@@ -14,7 +14,7 @@
   ],
   "permissions": [
     {
-      "user": "guest",
+      "user": "user",
       "vhost": "/",
       "configure": ".*",
       "write": ".*",
@@ -23,31 +23,47 @@
   ],
   "queues": [
     {
-      "name": "ai_chat_request_queue",
+      "name": "ai-request-queue",
       "vhost": "/",
-      "durable": true
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
     },
     {
-      "name": "ai_chat_response_queue",
+      "name": "ai-response-queue",
       "vhost": "/",
-      "durable": true
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
     }
   ],
   "exchanges": [
     {
-      "name": "ai_chat_exchange",
+      "name": "ai-chat-exchange",
       "vhost": "/",
       "type": "direct",
-      "durable": true
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
     }
   ],
   "bindings": [
     {
-      "source": "ai_chat_exchange",
+      "source": "ai-chat-exchange",
       "vhost": "/",
-      "destination": "ai_chat_request_queue",
+      "destination": "ai-request-queue",
       "destination_type": "queue",
-      "routing_key": "ai_chat_routing_key"
+      "routing_key": "ai.request",
+      "arguments": {}
+    },
+    {
+      "source": "ai-chat-exchange",
+      "vhost": "/",
+      "destination": "ai-response-queue",
+      "destination_type": "queue",
+      "routing_key": "ai.response",
+      "arguments": {}
     }
   ]
 }

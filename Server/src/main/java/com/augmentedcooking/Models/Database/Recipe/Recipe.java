@@ -1,10 +1,10 @@
 package com.augmentedcooking.Models.Database.Recipe;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import io.github.thibaultmeyer.cuid.CUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 public class Recipe {
 
     @Id
-    private ObjectId id;
+    private CUID id;
     private String title;
     private List<String> ingredients;
     private String instructions;

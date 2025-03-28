@@ -2,14 +2,13 @@ package com.augmentedcooking.Models.Database.User;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.augmentedcooking.Utils.Passwords;
+import com.augmentedcooking.Utils.impl.Passwords;
 
+import io.github.thibaultmeyer.cuid.CUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,8 +22,7 @@ import lombok.ToString;
 public class User {
 
     @Id
-    private ObjectId id;
-    private UUID pubId;
+    private CUID id;
     private String username;
     private String email;
     private byte[] passwordHash;
@@ -34,7 +32,7 @@ public class User {
     private long updatedAt;
 
     public User(String email, String username, String password) {
-        this.pubId = UUID.randomUUID();
+        this.id = CUID.randomCUID2();
         this.username = username;
         this.email = email;
         updatePassword(password);

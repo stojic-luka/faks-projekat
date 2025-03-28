@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import Enum  # type: ignore
 
 
 class MessageRoles(str, Enum):
-    ASSISTANT = "assistant"
-    USER = "user"
+    ASSISTANT = "ASSISTANT"
+    USER = "USER"

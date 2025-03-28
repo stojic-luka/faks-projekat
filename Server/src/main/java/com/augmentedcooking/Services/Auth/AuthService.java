@@ -1,7 +1,6 @@
 package com.augmentedcooking.Services.Auth;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +13,10 @@ import com.augmentedcooking.Models.Database.User.User;
 import com.augmentedcooking.Models.Response.Auth.Dto.TokensDto;
 import com.augmentedcooking.Models.Response.Auth.Dto.UserTokensDto;
 import com.augmentedcooking.Repositories.User.IUserRepository;
-import com.augmentedcooking.Utils.IJwtUtils;
-import com.augmentedcooking.Utils.Passwords;
+import com.augmentedcooking.Utils.base.IJwtUtils;
+import com.augmentedcooking.Utils.impl.Passwords;
 
+import io.github.thibaultmeyer.cuid.CUID;
 import io.jsonwebtoken.Claims;
 
 @Service
@@ -32,10 +32,10 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public UserTokensDto login(String email, String password) {
-        // TODO: add so user can login with username and email
-
-        Optional<User> userOptional = userRepository.findByEmail(email);
+    public UserTokensDto login(String identifier, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(identifier);
+        if (userOptional.isEmpty())
+            userOptional = userRepository.findByUsername(identifier);
         if (userOptional.isEmpty())
             throw (BaseResponseException) new UserNotFoundException();
 
@@ -71,7 +71,7 @@ public class AuthService implements IAuthService {
             return null;
 
         Claims claims = jwtUtils.parseRefresh(token);
-        Optional<User> userOptional = userRepository.findByPublicId(UUID.fromString(claims.getSubject()));
+        Optional<User> userOptional = userRepository.findById(CUID.fromString(claims.getSubject()));
         if (userOptional.isEmpty())
             return null;
 

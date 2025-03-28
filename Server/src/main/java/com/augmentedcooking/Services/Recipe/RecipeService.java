@@ -34,7 +34,7 @@ public class RecipeService implements IRecipeService {
     }
 
     @Override
-    public List<Recipe> getUserFavoriteRecipes(String publicId, int page, int limit) {
-        return recipeRepository.findUserFavorites(publicId, page, limit);
+    public List<Recipe> getUserFavoriteRecipes(String userId, int page, int limit) {
+        return recipeRepository.findUserFavorites(userId, page, limit);
     }
 }

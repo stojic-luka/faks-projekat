@@ -1,36 +1,51 @@
 package com.augmentedcooking.Controllers;
 
+import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import com.augmentedcooking.Exceptions.BaseResponseException;
-import com.augmentedcooking.Exceptions.User.InvalidUUIDException;
-import com.augmentedcooking.Models.Database.Chat.Message;
+import com.augmentedcooking.Exceptions.Chat.ChatClearFailedException;
+import com.augmentedcooking.Exceptions.Chat.InvalidCuidException;
+import com.augmentedcooking.Exceptions.Chat.MessageNotFoundException;
+import com.augmentedcooking.Exceptions.Http.BadRequestException;
+import com.augmentedcooking.Exceptions.Http.InternalServerException;
+import com.augmentedcooking.Exceptions.User.InvalidCUIDException;
+import com.augmentedcooking.Models.Database.Chat.ChatMessage;
+import com.augmentedcooking.Models.Rabbitmq.Response.complete.AiChatCompleteResponse;
+import com.augmentedcooking.Models.Request.Chat.ChatRequestBody;
 import com.augmentedcooking.Models.Response.ResponseWrapper;
-import com.augmentedcooking.Models.Response.Chat.MessageResponseBody;
-import com.augmentedcooking.Services.Chat.IChatService;
-import com.augmentedcooking.Utils.ValidationUtils;
+import com.augmentedcooking.Models.Response.Chat.ChatMessageResponseBody;
+import com.augmentedcooking.Services.Chat.base.IAiMessageService;
+import com.augmentedcooking.Services.Chat.base.IChatService;
+
+import io.github.thibaultmeyer.cuid.CUID;
 
 @RestController
 @RequestMapping(path = "/api/v1/chat")
 public class ChatController {
 
     private final IChatService chatService;
+    private final IAiMessageService aiMessageService;
 
     @Autowired
-    public ChatController(final IChatService chatService) {
+    public ChatController(final IChatService chatService, final IAiMessageService aiMessageService) {
         this.chatService = chatService;
+        this.aiMessageService = aiMessageService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -38,48 +53,73 @@ public class ChatController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int limit,
             UsernamePasswordAuthenticationToken authentication) {
-        List<Message> messages = chatService.getMessagesByUserId(authentication.getName(), page, limit);
+        List<ChatMessage> messages = chatService.getMessagesByUserId(authentication.getName(), page, limit);
 
-        List<MessageResponseBody> responseBody = messages.stream()
-                .map(r -> new MessageResponseBody(r))
+        List<ChatMessageResponseBody> responseBody = messages.stream()
+                .map(r -> new ChatMessageResponseBody(r))
                 .collect(Collectors.toList());
 
         return ResponseWrapper.success(responseBody);
     }
 
     @PostMapping(produces = {
-            MediaType.TEXT_EVENT_STREAM_VALUE,
+            MediaType.APPLICATION_OCTET_STREAM_VALUE,
             MediaType.APPLICATION_JSON_VALUE }, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sendChatMessage(UsernamePasswordAuthenticationToken authentication) {
+    public Object sendChatMessage(
+            @RequestBody ChatRequestBody body,
+            UsernamePasswordAuthenticationToken authentication) {
+        if (body == null
+                || body.getTempCuid() == null || body.getTempCuid().isEmpty()
+                || body.getModel() == null || body.getModel().isEmpty()
+                || body.getPrompt() == null || body.getPrompt().isEmpty())
+            throw (BaseResponseException) new BadRequestException();
 
-        // TODO!: ADD MESSAGE SENDING LOGIC
+        if (!CUID.isValid(body.getTempCuid()))
+            throw (BaseResponseException) new InvalidCuidException();
 
-        return ResponseWrapper.success(null);
+        if (!body.isStreamed()) {
+            AiChatCompleteResponse response = aiMessageService.askAI(body);
+            return ResponseWrapper.success(response, MediaType.APPLICATION_JSON);
+        }
+
+        return new StreamingResponseBody() {
+            @Override
+            public void writeTo(@NonNull OutputStream outputStream) {
+                try {
+                    aiMessageService.askAI(body, outputStream);
+                } catch (Exception e) {
+                    if (!(e instanceof BaseResponseException)) {
+                        System.err.println(e);
+                        for (StackTraceElement element : e.getStackTrace()) {
+                            System.err.println(element);
+                        }
+                        throw (BaseResponseException) new InternalServerException();
+                    }
+                    throw (BaseResponseException) e;
+                }
+            }
+        };
     }
 
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteChatMessage(
             @RequestParam("id") String messageId,
             UsernamePasswordAuthenticationToken authentication) {
-        if (!ValidationUtils.validateUUIDString(messageId))
-            throw (BaseResponseException) new InvalidUUIDException();
+        if (!CUID.isValid(messageId))
+            throw (BaseResponseException) new InvalidCUIDException();
 
-        Message deletedMessage = chatService.deleteMessageByUserId(authentication.getName(), messageId);
-
+        ChatMessage deletedMessage = chatService.deleteMessageByUserId(authentication.getName(), messageId);
         if (deletedMessage == null)
-            // TODO: replace with adequate exceptions
-            return ResponseWrapper.error(null, null);
+            throw (BaseResponseException) new MessageNotFoundException();
 
-        return ResponseWrapper.success(new MessageResponseBody(deletedMessage));
+        return ResponseWrapper.success(new ChatMessageResponseBody(deletedMessage));
     }
 
     @DeleteMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> clearChatMessages(UsernamePasswordAuthenticationToken authentication) {
         boolean isClearSuccess = chatService.clearChatMessagesByUserId(authentication.getName());
-
         if (!isClearSuccess)
-            // TODO: replace with adequate exceptions
-            return ResponseWrapper.error(null, null);
+            throw (BaseResponseException) new ChatClearFailedException();
 
         return ResponseWrapper.success(null);
     }
