@@ -7,7 +7,7 @@ const Switch = ({ value, onChange, disabled = false }: Props) => {
   return (
     <div
       className={`inline-block w-9 h-5 rounded-full relative cursor-pointer transition-color duration-300 ease-in-out ${
-        value ? "bg-green-500" : "bg-gray-400"
+        value ? "bg-blue-500" : "bg-gray-400"
       }`}
       onClick={() => !disabled && onChange()}
     >

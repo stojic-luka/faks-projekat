@@ -91,6 +91,7 @@ class RabbitMQConsumer:
                     self.__process_streamed_response(
                         *get_streamed_chatbot_response(
                             request_id=message.request_id,
+                            user_id=message.user_id,
                             model=message.model,
                             prompt=message.prompt,
                             image_b64=message.imageb64,
@@ -102,6 +103,7 @@ class RabbitMQConsumer:
                 REQUEST_content = asyncio.run(
                     get_chatbot_response(
                         request_id=message.request_id,
+                        user_id=message.user_id,
                         model=message.model,
                         prompt=message.prompt,
                         image_b64=message.imageb64,

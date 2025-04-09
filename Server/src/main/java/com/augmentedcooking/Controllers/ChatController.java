@@ -1,8 +1,8 @@
 package com.augmentedcooking.Controllers;
 
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import com.augmentedcooking.Exceptions.BaseResponseException;
 import com.augmentedcooking.Exceptions.Chat.ChatClearFailedException;
-import com.augmentedcooking.Exceptions.Chat.InvalidCuidException;
 import com.augmentedcooking.Exceptions.Chat.MessageNotFoundException;
 import com.augmentedcooking.Exceptions.Http.BadRequestException;
 import com.augmentedcooking.Exceptions.Http.InternalServerException;
@@ -48,19 +47,20 @@ public class ChatController {
         this.aiMessageService = aiMessageService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getChatMessages(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int limit,
-            UsernamePasswordAuthenticationToken authentication) {
-        List<ChatMessage> messages = chatService.getMessagesByUserId(authentication.getName(), page, limit);
+    // @GetMapping(path = "/messages", produces = MediaType.APPLICATION_JSON_VALUE)
+    // public ResponseWrapper<List<ChatMessageResponseBody>> getChatMessages(
+    // @RequestParam(defaultValue = "0") int page,
+    // @RequestParam(defaultValue = "20") int limit,
+    // UsernamePasswordAuthenticationToken authentication) {
+    // List<ChatMessage> messages =
+    // chatService.getMessagesByUserId(authentication.getName(), page, limit);
 
-        List<ChatMessageResponseBody> responseBody = messages.stream()
-                .map(r -> new ChatMessageResponseBody(r))
-                .collect(Collectors.toList());
+    // List<ChatMessageResponseBody> responseBody = messages.stream()
+    // .map(r -> new ChatMessageResponseBody(r))
+    // .collect(Collectors.toList());
 
-        return ResponseWrapper.success(responseBody);
-    }
+    // return ResponseWrapper.success(responseBody);
+    // }
 
     @PostMapping(produces = {
             MediaType.APPLICATION_OCTET_STREAM_VALUE,
@@ -69,16 +69,12 @@ public class ChatController {
             @RequestBody ChatRequestBody body,
             UsernamePasswordAuthenticationToken authentication) {
         if (body == null
-                || body.getTempCuid() == null || body.getTempCuid().isEmpty()
                 || body.getModel() == null || body.getModel().isEmpty()
                 || body.getPrompt() == null || body.getPrompt().isEmpty())
             throw (BaseResponseException) new BadRequestException();
 
-        if (!CUID.isValid(body.getTempCuid()))
-            throw (BaseResponseException) new InvalidCuidException();
-
         if (!body.isStreamed()) {
-            AiChatCompleteResponse response = aiMessageService.askAI(body);
+            AiChatCompleteResponse response = aiMessageService.askAI(body, authentication.getName());
             return ResponseWrapper.success(response, MediaType.APPLICATION_JSON);
         }
 
@@ -86,7 +82,7 @@ public class ChatController {
             @Override
             public void writeTo(@NonNull OutputStream outputStream) {
                 try {
-                    aiMessageService.askAI(body, outputStream);
+                    aiMessageService.askAI(body, outputStream, authentication.getName());
                 } catch (Exception e) {
                     if (!(e instanceof BaseResponseException)) {
                         System.err.println(e);
@@ -102,7 +98,7 @@ public class ChatController {
     }
 
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteChatMessage(
+    public ResponseWrapper<ChatMessageResponseBody> deleteChatMessage(
             @RequestParam("id") String messageId,
             UsernamePasswordAuthenticationToken authentication) {
         if (!CUID.isValid(messageId))
@@ -122,5 +118,14 @@ public class ChatController {
             throw (BaseResponseException) new ChatClearFailedException();
 
         return ResponseWrapper.success(null);
+    }
+
+    @GetMapping(path = "/models", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseWrapper<List<String>> getAvailableAiModels() {
+        return ResponseWrapper.success(
+                Arrays.asList(
+                        "llama3.2:3b",
+                        "deepseek-r1:8b",
+                        "llava:7b"));
     }
 }

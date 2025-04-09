@@ -3,7 +3,7 @@ import { UserResponse } from "../types/authTypes";
 import { ApiResponse, ApiResponseData } from "../types/responseTypes";
 
 export const fetchUser = async () => {
-  const response = await authenticatedAxios.get<ApiResponse<UserResponse>>("/api/v1/self", {
+  const response = await authenticatedAxios.get<ApiResponse<UserResponse>>("/api/v1/user/self", {
     headers: {
       "Content-Type": "application/json",
     },

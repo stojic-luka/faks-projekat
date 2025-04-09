@@ -25,7 +25,7 @@ from app.enum import MessageRoles, ResponseTypes  # type: ignore
 
 
 def get_streamed_chatbot_response(
-    request_id: str, model: str, prompt: str, image_b64: str | None = None
+    request_id: str, user_id: str, model: str, prompt: str, image_b64: str | None = None
 ) -> tuple[
     ChatStreamedMetadataResponse,
     Coroutine[Any, Any, AsyncStream[ChatCompletionChunk]],
@@ -49,7 +49,8 @@ def get_streamed_chatbot_response(
 
     system_message: Union[ChatCompletionSystemMessageParam] = {
         "role": "system",
-        "content": "You are a helpful assistant that only discusses recipes. Avoid other topics.",
+        # "content": "You are a helpful assistant that only discusses recipes. Avoid other topics.",
+        "content": "You are a helpful assistant.",
     }
 
     return (
@@ -59,6 +60,7 @@ def get_streamed_chatbot_response(
             sequence=0,
             last_chunk=False,
             content=ChatStreamedMetadataContent(
+                user_id=user_id,
                 model=model,
                 role=MessageRoles.ASSISTANT,
                 timestamp=0,
@@ -73,7 +75,7 @@ def get_streamed_chatbot_response(
 
 
 async def get_chatbot_response(
-    request_id: str, model: str, prompt: str, image_b64: str | None = None
+    request_id: str, user_id: str, model: str, prompt: str, image_b64: str | None = None
 ) -> ChatResponse:
     user_content: List[ChatCompletionContentPartParam] = [
         {"type": "text", "text": prompt}
@@ -94,7 +96,8 @@ async def get_chatbot_response(
 
     system_message: Union[ChatCompletionSystemMessageParam] = {
         "role": "system",
-        "content": "You are a helpful assistant that only discusses recipes. Avoid other topics.",
+        # "content": "You are a helpful assistant that only discusses recipes. Avoid other topics.",
+        "content": "You are a helpful assistant",
     }
 
     response: ChatCompletion = await client.chat.completions.create(
@@ -104,6 +107,7 @@ async def get_chatbot_response(
 
     return ChatResponse(
         request_id=request_id,
+        user_id=user_id,
         type=ResponseTypes.COMPLETE,
         role=MessageRoles.ASSISTANT,
         model=model,
@@ -114,8 +118,8 @@ async def get_chatbot_response(
                 )
             )
         ),
-        message=ChatResponseMessage(
-            content=str(response.choices[0].message.content),
+        content=ChatResponseMessage(
+            text=str(response.choices[0].message.content),
             images=[],
         ),
     )

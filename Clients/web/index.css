@@ -25,33 +25,32 @@
     @apply stroke-neutral-700;
   }
 
-  .bot-reply h1,
-  .bot-reply h2,
-  .bot-reply h3,
-  .bot-reply h4,
-  .bot-reply h5,
-  .bot-reply h6,
-  .bot-reply span,
-  .bot-reply p,
-  .bot-reply strong,
-  .bot-reply em,
-  .bot-reply del,
-  .bot-reply u,
-  .bot-reply sup,
-  .bot-reply sub {
+  .bot-reply :is(h1, h2, h3, h4, h5, h6, span, p, strong, em, del, u, sup, sub):not(:is(code.hljs *)) {
     @apply text-neutral-700 dark:text-neutral-100;
   }
 
   .bot-reply h1 {
-    @apply text-5xl;
+    @apply text-4xl;
   }
 
-  .bot-reply h2 {
-    @apply text-4xl;
+  bot-reply h2 {
+    @apply text-3xl;
   }
 
   .bot-reply h3 {
     @apply text-3xl;
+  }
+
+  .bot-reply h4 {
+    @apply text-2xl;
+  }
+
+  .bot-reply h5 {
+    @apply text-2xl;
+  }
+
+  .bot-reply h6 {
+    @apply text-xl;
   }
 
   .bot-reply hr {
@@ -79,34 +78,19 @@
     @apply marker:text-neutral-700 dark:marker:text-neutral-100;
   }
 
-  .bot-reply div:has(pre) > div:has(span) {
-    @apply flex flex-row h-10 w-full bg-neutral-100 dark:bg-neutral-800 border-b-4 border-neutral-200 dark:border-neutral-700;
+  .bot-reply pre:has(code) {
+    @apply flex flex-col rounded-xl border border-neutral-200 dark:border-neutral-700;
   }
-  .bot-reply div:has(pre) > div:has(span) > span {
-    @apply ml-3 my-auto text-xs;
+  .bot-reply pre code {
+    @apply text-neutral-100 rounded-b-xl font-mono text-sm bg-neutral-900 p-4 overflow-x-auto scrollbar-redesign dark:scrollbar-redesign-dark;
   }
-  .bot-reply div:has(pre) > div:has(button) {
-    @apply sticky top-9 h-full right-0 -mt-[3px] -mr-[1px];
-  }
-  .bot-reply div:has(pre) > div:has(button) > div {
-    @apply absolute bottom-0 right-0 flex items-center;
-  }
-  .bot-reply div:has(pre) > div:has(button) button {
-    @apply text-neutral-700 dark:text-neutral-300 border px-2 py-1 m-[6px] border-neutral-300 dark:border-neutral-600 rounded-lg text-xs hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors duration-150;
-  }
-  .bot-reply div:has(pre) {
-    @apply relative max-w-2xl border border-neutral-200 dark:border-neutral-700 rounded-xl my-4 !overflow-clip;
-  }
-  .bot-reply pre {
-    @apply overflow-x-auto bg-neutral-800 text-white p-4 font-mono text-sm scrollbar-redesign dark:scrollbar-redesign-dark;
-  }
-  .bot-reply pre::-webkit-scrollbar-track,
-  .bot-reply pre::-webkit-scrollbar-thumb {
-    @apply rounded-t-none rounded-b-xl;
+  .bot-reply pre code::-webkit-scrollbar-track,
+  .bot-reply pre code::-webkit-scrollbar-thumb {
+    @apply rounded-t-none rounded-b-full;
   }
 
-  .bot-reply code {
-    @apply p-1 border rounded bg-neutral-700 text-white font-mono text-sm border-neutral-200 dark:border-neutral-700;
+  .bot-reply code:not(:is(pre.hljs code)) {
+    @apply px-1 py-0.5 border rounded bg-neutral-700 text-white font-mono text-sm border-neutral-200 dark:border-neutral-700;
   }
 
   .bot-reply div:has(table) {

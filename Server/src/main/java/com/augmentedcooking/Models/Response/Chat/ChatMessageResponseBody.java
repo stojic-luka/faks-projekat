@@ -4,8 +4,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.annotation.Id;
-
 import com.augmentedcooking.Models.Database.Chat.ChatMessage;
 import com.augmentedcooking.Models.Database.Chat.ChatMessage.MessageContent;
 import com.augmentedcooking.Models.Database.Chat.ChatMessage.MessageContent.ChatImage;
@@ -24,31 +22,33 @@ import lombok.ToString;
 @NoArgsConstructor
 public class ChatMessageResponseBody {
 
-    @Id
     private String id;
     private String type;
     private String model;
     private String role;
     private MessageContentResponseBody content;
     private long timestamp;
+    private String userId;
 
-    public ChatMessageResponseBody(ChatMessage recipeImage) {
-        this.id = recipeImage.getId().toString();
-        this.type = recipeImage.getType().toString();
-        this.model = recipeImage.getModel();
-        this.role = recipeImage.getRole().toString();
-        this.content = new MessageContentResponseBody(recipeImage.getContent());
-        this.timestamp = recipeImage.getTimestamp();
+    public ChatMessageResponseBody(ChatMessage chatMessage) {
+        this.id = chatMessage.getId().toString();
+        this.type = chatMessage.getType().toString();
+        this.model = chatMessage.getModel();
+        this.role = chatMessage.getRole().toString();
+        this.content = new MessageContentResponseBody(chatMessage.getContent());
+        this.timestamp = chatMessage.getTimestamp();
+        this.userId = chatMessage.getUserId().toString();
     }
 
     public ChatMessageResponseBody(CUID id, String type, String model, String role, MessageContent content,
-            long timestamp) {
+            long timestamp, CUID userId) {
         this.id = id.toString();
         this.type = type;
         this.model = model;
         this.role = role;
         this.content = new MessageContentResponseBody(content);
         this.timestamp = timestamp;
+        this.userId = userId.toString();
     }
 
     @Getter

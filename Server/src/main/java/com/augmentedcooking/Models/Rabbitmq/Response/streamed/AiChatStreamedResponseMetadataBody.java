@@ -9,14 +9,19 @@ import lombok.Getter;
 
 @Getter
 class AiChatStreamedResponseMetadataContent {
+
+    @JsonProperty("user_id")
+    private final String userId;
     private final String model;
     private final MessageRoles role;
     private final long timestamp;
 
     public AiChatStreamedResponseMetadataContent(
+            @JsonProperty("user_id") String userId,
             @JsonProperty("model") String model,
             @JsonProperty("role") String role,
             @JsonProperty("timestamp") long timestamp) {
+        this.userId = userId;
         this.model = model;
         this.role = MessageRoles.valueOf(role);
         this.timestamp = timestamp;

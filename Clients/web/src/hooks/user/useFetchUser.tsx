@@ -7,11 +7,12 @@ export const useFetchUser = () => {
   return useQuery<
     ApiResponseData<UserResponse>, // TQueryFnData
     ApiResponseError, // TError
-    void, // TData = TQueryFnData
+    UserResponse, // TData = TQueryFnData
     QueryKey // QueryKey
   >({
     queryKey: ["fetch-user"],
     queryFn: fetchUser,
+    select: (data) => data.data,
     staleTime: Infinity,
   });
 };

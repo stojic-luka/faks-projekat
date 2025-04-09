@@ -4,6 +4,7 @@ import EmailSvg from "../../assets/svg/email.svg?react";
 import PasswordSvg from "../../assets/svg/password.svg?react";
 import OpenEyeSvg from "../../assets/svg/open_eye.svg?react";
 import ClosedEyeSvg from "../../assets/svg/closed_eye.svg?react";
+import { useAuth } from "../../contexts/useAuth";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,6 +12,10 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
+
+  const {
+    login: { mutate: loginMutate, isPending: isLoginPending, isError: isLoginError, error: loginError },
+  } = useAuth();
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,9 +25,9 @@ const LoginForm = () => {
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      console.log("Form submitted:", formData);
+      loginMutate({ username: formData.email, password: formData.password });
     },
-    [formData]
+    [formData, loginMutate]
   );
 
   return (
@@ -34,9 +39,9 @@ const LoginForm = () => {
               <EmailSvg className="m-auto icon-fill-light" />
             </span>
             <input
-              type="email"
+              type="text"
               name="email"
-              placeholder="Email"
+              placeholder="Email or username"
               className="bg-transparent outline-none border-0 w-full text-white"
               onChange={handleChange}
             />
@@ -64,7 +69,8 @@ const LoginForm = () => {
             </a>
           </div>
         </div>
-        <button type="submit" className="bg-blue-600 py-2 px-5 rounded-md font-bold text-white">
+        {isLoginError && <span className="text-red-600">{`${loginError.error.code}: ${loginError.error.message}`}</span>}
+        <button type="submit" className="bg-blue-600 py-2 px-5 rounded-md font-bold text-white" disabled={isLoginPending}>
           Login
         </button>
       </form>

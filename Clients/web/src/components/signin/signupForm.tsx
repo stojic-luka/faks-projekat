@@ -5,6 +5,7 @@ import UsernameSvg from "../../assets/svg/username.svg?react";
 import PasswordSvg from "../../assets/svg/password.svg?react";
 import OpenEyeSvg from "../../assets/svg/open_eye.svg?react";
 import ClosedEyeSvg from "../../assets/svg/closed_eye.svg?react";
+import { useAuth } from "../../contexts/useAuth";
 
 const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +15,10 @@ const SignupForm = () => {
     password: "",
   });
 
+  const {
+    signup: { mutate: signupMutate, isPending: isSignupPending, isError: isSignupError, error: signupError },
+  } = useAuth();
+
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevForm) => ({ ...prevForm, [name]: value }));
@@ -22,9 +27,9 @@ const SignupForm = () => {
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      console.log("Form submitted:", formData);
+      signupMutate({ username: formData.email, password: formData.password });
     },
-    [formData]
+    [formData, signupMutate]
   );
 
   return (
@@ -73,7 +78,8 @@ const SignupForm = () => {
             </button>
           </div>
         </div>
-        <button type="submit" className="bg-blue-600 py-2 px-5 rounded-md font-bold text-white mt-2">
+        {isSignupError && <span className="text-red-600">{`${signupError.error.code}: ${signupError.error.message}`}</span>}
+        <button type="submit" className="bg-blue-600 py-2 px-5 rounded-md font-bold text-white mt-2" disabled={isSignupPending}>
           Sign Up
         </button>
       </form>

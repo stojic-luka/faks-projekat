@@ -36,6 +36,7 @@ const App = () => {
                   <Route path="/tools" element={<ToolsPageLazy />} />
                 </Route>
               </Route>
+              <Route path="*" element={<div>nemaaa</div>} />
             </Routes>
           </Router>
         </Suspense>

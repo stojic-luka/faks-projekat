@@ -6,7 +6,7 @@ import AddImageSvg from "../../assets/svg/add_image.svg?react";
 import EraserSvg from "../../assets/svg/eraser.svg?react";
 
 const SettingsMenu = () => {
-  const { streamResponse, setStreamResponse, clearChatFunction } = useChatSettings();
+  const { streamResponse, setStreamResponse, clearChatFunction, availableModels, handleChangeModel, selectedModel } = useChatSettings();
 
   return (
     <div className="w-56 rounded-md shadow-lg border dark:border-neutral-600 bg-[#f4f4f4] dark:bg-[#2f2f2f] focus:outline-none" role="menu">
@@ -36,6 +36,16 @@ const SettingsMenu = () => {
           <EraserSvg className="mr-2" />
           <span className="my-auto">Clear chat</span>
         </button>
+        <div className="flex w-auto mx-1 px-2 py-1.5 text-sm text-neutral-700 dark:text-neutral-100">
+          <label className="mr-2 my-auto">Model:</label>
+          <select value={selectedModel} onChange={(e) => handleChangeModel(e.target.value)} className="rounded p-1 bg-white dark:bg-neutral-800">
+            {availableModels?.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   );

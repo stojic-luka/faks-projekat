@@ -1,14 +1,25 @@
 from pydantic import BaseModel
-
+from typing import Generic, TypeVar
 from app.enum import ResponseTypes, MessageRoles  # type: ignore
 
+T = TypeVar("T")
 
-class ChatStreamedTextResponse(BaseModel):
+
+class ChatStreamedResponse(BaseModel, Generic[T]):
     request_id: str
-    type: ResponseTypes = ResponseTypes.STREAMED_TEXT
     sequence: int
     last_chunk: bool
-    content: str
+    content: T
+
+
+#
+
+
+class ChatStreamedTextResponse(ChatStreamedResponse[str]):
+    type: ResponseTypes = ResponseTypes.STREAMED_TEXT
+
+
+#
 
 
 class ChatStreamedImageContent(BaseModel):
@@ -19,23 +30,19 @@ class ChatStreamedImageContent(BaseModel):
     description: str
 
 
-class ChatStreamedImageResponse(BaseModel):
-    request_id: str
+class ChatStreamedImageResponse(ChatStreamedResponse[ChatStreamedImageContent]):
     type: ResponseTypes = ResponseTypes.STREAMED_IMAGE
-    sequence: int
-    last_chunk: bool
-    content: ChatStreamedImageContent
+
+
+#
 
 
 class ChatStreamedMetadataContent(BaseModel):
+    user_id: str
     model: str
     role: MessageRoles
     timestamp: int
 
 
-class ChatStreamedMetadataResponse(BaseModel):
-    request_id: str
+class ChatStreamedMetadataResponse(ChatStreamedResponse[ChatStreamedMetadataContent]):
     type: ResponseTypes = ResponseTypes.STREAMED_METADATA
-    sequence: int
-    last_chunk: bool
-    content: ChatStreamedMetadataContent

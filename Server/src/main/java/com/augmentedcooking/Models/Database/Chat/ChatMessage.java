@@ -30,14 +30,17 @@ public class ChatMessage {
     private MessageRoles role;
     private MessageContent content;
     private long timestamp;
+    private CUID userId;
 
-    public ChatMessage(ResponseTypes type, String model, MessageRoles role, MessageContent content, long timestamp) {
+    public ChatMessage(ResponseTypes type, String model, MessageRoles role, MessageContent content, long timestamp,
+            CUID userId) {
         this.id = CUID.randomCUID2();
         this.type = type;
         this.model = model;
         this.role = role;
         this.content = content;
         this.timestamp = timestamp;
+        this.userId = userId;
     }
 
     @Getter

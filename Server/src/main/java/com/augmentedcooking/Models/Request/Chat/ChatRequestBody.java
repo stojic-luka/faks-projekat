@@ -15,8 +15,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class ChatRequestBody {
 
-    @JsonProperty("temp_id")
-    private String tempCuid;
     private String model;
     private String prompt;
 

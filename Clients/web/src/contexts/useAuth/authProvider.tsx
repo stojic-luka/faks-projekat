@@ -45,13 +45,11 @@ export const AuthProvider = ({ children }: Props) => {
     user,
     setUser,
     token,
-    setToken,
     login,
     signup,
     refresh,
     logout,
-    // isAuthenticated: !!user, //! TODO: change this later
-    isAuthenticated: true,
+    isAuthenticated: !!user,
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

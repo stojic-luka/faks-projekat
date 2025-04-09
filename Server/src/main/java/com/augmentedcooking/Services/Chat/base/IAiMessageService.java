@@ -7,7 +7,7 @@ import com.augmentedcooking.Models.Request.Chat.ChatRequestBody;
 
 public interface IAiMessageService {
 
-    AiChatCompleteResponse askAI(ChatRequestBody body);
+    AiChatCompleteResponse askAI(ChatRequestBody body, String userId);
 
-    void askAI(ChatRequestBody body, OutputStream outputStream);
+    void askAI(ChatRequestBody body, OutputStream outputStream, String userId);
 }

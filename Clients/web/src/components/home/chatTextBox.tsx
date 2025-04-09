@@ -2,33 +2,40 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import GearSvg from "../../assets/svg/gear.svg?react";
 import SendSvg from "../../assets/svg/send.svg?react";
+import SquareSvg from "../../assets/svg/square.svg?react";
 import SettingsMenu from "./settingsMenu";
+import CloseMenuPortal from "../shared/closeMenuPortal";
 
 interface Props {
   sendMessage: (message: string) => void;
   disabled: boolean;
   onAbort: ((reason?: unknown) => void) | undefined;
 }
-const ChatTextBox = ({ sendMessage, disabled }: Props) => {
+const ChatTextBox = ({ sendMessage, disabled, onAbort }: Props) => {
   const [input, setInput] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const promptBoxRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleSendMessage = useCallback(() => {
-    if (input.trim() !== "") {
+  const handleSendClick = useCallback(() => {
+    if (input.trim() !== "" && !disabled) {
       setInput("");
       sendMessage(input);
     }
-  }, [input, sendMessage]);
+    if (disabled && onAbort) onAbort();
+  }, [disabled, input, onAbort, sendMessage]);
 
   const handleOnKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        handleSendMessage();
+        handleSendClick();
+      }
+      if (e.key === "Escape") {
+        setInput("");
+        if (onAbort) onAbort();
       }
     },
-    [handleSendMessage]
+    [handleSendClick, onAbort]
   );
 
   useEffect(() => {
@@ -51,9 +58,12 @@ const ChatTextBox = ({ sendMessage, disabled }: Props) => {
               <GearSvg className="m-1 icon-stroke-dark dark:icon-stroke-light stroke-[1.5]" />
             </button>
             {isMenuOpen && (
-              <div className="absolute left-1 bottom-10">
-                <SettingsMenu />
-              </div>
+              <>
+                <CloseMenuPortal onClose={() => setIsMenuOpen(false)} overlayClassName="fixed inset-0 bg-transparent z-[49]" />
+                <div className="absolute left-1 bottom-10 z-50">
+                  <SettingsMenu />
+                </div>
+              </>
             )}
           </div>
           <div className="min-w-0 max-w-full flex-1 max-h-52 overflow-auto mx-2 scrollbar-redesign dark:scrollbar-redesign-dark">
@@ -71,10 +81,10 @@ const ChatTextBox = ({ sendMessage, disabled }: Props) => {
             <button
               aria-label="Attach files"
               className="flex items-center justify-center h-8 w-8 rounded-xl hover:bg-black/10 duration-75"
-              onClick={handleSendMessage}
+              onClick={handleSendClick}
             >
-              <SendSvg className="m-1 icon-stroke-dark dark:icon-stroke-light stroke-[1.5]" />
-              {/* <SquareSvg onClick={onAbort} /> */}
+              {!disabled && <SendSvg className="m-1 icon-stroke-dark dark:icon-stroke-light stroke-[1.5]" />}
+              {disabled && <SquareSvg className="m-1 icon-fill-dark dark:icon-fill-light stroke-[1.5]" />}
             </button>
           </div>
         </div>

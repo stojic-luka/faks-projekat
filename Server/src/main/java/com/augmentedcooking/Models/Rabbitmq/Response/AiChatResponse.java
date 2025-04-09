@@ -18,11 +18,11 @@ import lombok.Getter;
 })
 public abstract class AiChatResponse {
 
-    private final String requestId;
+    private final String id;
     private final ResponseTypes type;
 
     public AiChatResponse(String requestId, String type) {
-        this.requestId = requestId;
+        this.id = requestId;
         this.type = ResponseTypes.valueOf(type);
     }
 }

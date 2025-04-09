@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.augmentedcooking.Config.RabbitMQ.RabbitMQConfigs;
+import com.augmentedcooking.Enums.Response.ResponseTypes;
 import com.augmentedcooking.Exceptions.Chat.ChatTimeoutException;
 import com.augmentedcooking.Models.Rabbitmq.Request.AiRequestBody;
 import com.augmentedcooking.Models.Rabbitmq.Response.AiChatResponse;
@@ -43,31 +44,36 @@ public class AiMessageService implements IAiMessageService {
 
     @RabbitListener(queues = "${rabbitmq.responseQueue}")
     private void handleResponse(AiChatResponse response) {
-        String requestId = response.getRequestId();
+        String requestId = response.getId();
+        ResponseTypes responseType = response.getType();
 
-        Consumer<AiChatStreamedResponse<?>> streamHandler = streamingHandlers.get(requestId);
-        if (streamHandler != null) {
-            AiChatStreamedResponse<?> streamedResponse = (AiChatStreamedResponse<?>) response;
-            streamHandler.accept(streamedResponse);
+        if (responseType == ResponseTypes.COMPLETE) {
+            CompletableFuture<AiChatCompleteResponse> future = pendingRequests.remove(requestId);
+            if (future != null) {
+                try {
+                    future.complete((AiChatCompleteResponse) response);
+                } catch (ClassCastException e) {
+                    future.completeExceptionally(new IllegalStateException("Unexpected response type", e));
+                }
+            }
+        } else if (responseType == ResponseTypes.STREAMED_METADATA
+                || responseType == ResponseTypes.STREAMED_TEXT
+                || responseType == ResponseTypes.STREAMED_IMAGE) {
+            Consumer<AiChatStreamedResponse<?>> streamHandler = streamingHandlers.get(requestId);
+            if (streamHandler != null) {
+                AiChatStreamedResponse<?> streamedResponse = (AiChatStreamedResponse<?>) response;
+                streamHandler.accept(streamedResponse);
 
-            if (streamedResponse.isLastChunk())
-                streamingHandlers.remove(requestId);
+                if (streamedResponse.isLastChunk())
+                    streamingHandlers.remove(requestId);
 
-            return;
-        }
-
-        CompletableFuture<AiChatCompleteResponse> future = pendingRequests.remove(requestId);
-        if (future != null) {
-            try {
-                future.complete((AiChatCompleteResponse) response);
-            } catch (ClassCastException e) {
-                future.completeExceptionally(new IllegalStateException("Unexpected response type", e));
+                return;
             }
         }
     }
 
     @Override
-    public AiChatCompleteResponse askAI(ChatRequestBody body) {
+    public AiChatCompleteResponse askAI(ChatRequestBody body, String userId) {
         String requestId = CUID.randomCUID2().toString();
 
         CompletableFuture<AiChatCompleteResponse> future = new CompletableFuture<>();
@@ -76,7 +82,7 @@ public class AiMessageService implements IAiMessageService {
         rabbitTemplate.convertAndSend(
                 rabbitMQConfigsProperties.getExchangeName(),
                 rabbitMQConfigsProperties.getRequestRoutingKey(),
-                new AiRequestBody(requestId, body.getModel(), body.getPrompt(), false, body.getImageb64()));
+                new AiRequestBody(requestId, userId, body.getModel(), body.getPrompt(), false, body.getImageb64()));
 
         try {
             return future.get(90, TimeUnit.SECONDS);
@@ -87,7 +93,7 @@ public class AiMessageService implements IAiMessageService {
     }
 
     @Override
-    public void askAI(ChatRequestBody body, OutputStream outputStream) {
+    public void askAI(ChatRequestBody body, OutputStream outputStream, String userId) {
         String requestId = CUID.randomCUID2().toString();
         ObjectMapper objectMapper = new ObjectMapper();
         CountDownLatch completionLatch = new CountDownLatch(1);
@@ -114,7 +120,7 @@ public class AiMessageService implements IAiMessageService {
         rabbitTemplate.convertAndSend(
                 rabbitMQConfigsProperties.getExchangeName(),
                 rabbitMQConfigsProperties.getRequestRoutingKey(),
-                new AiRequestBody(requestId, body.getModel(), body.getPrompt(), true, body.getImageb64()));
+                new AiRequestBody(requestId, userId, body.getModel(), body.getPrompt(), true, body.getImageb64()));
 
         try {
             if (!completionLatch.await(90, TimeUnit.SECONDS))
