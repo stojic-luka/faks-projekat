@@ -4,7 +4,7 @@ import java.util.Base64;
 
 import org.bson.types.Binary;
 
-import com.augmentedcooking.Models.Database.Recipe.RecipeImage;
+import com.augmentedcooking.Models.Database.Recipe.Recipe.RecipeImage;
 
 import lombok.Getter;
 import lombok.ToString;

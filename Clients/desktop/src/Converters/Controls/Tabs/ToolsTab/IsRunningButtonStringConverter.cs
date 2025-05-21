@@ -1,12 +1,14 @@
 ﻿using System.Globalization;
-using System.Windows.Data;
 
-namespace DesktopClient.src.Converters.Controls.Tabs.ToolsTab {
+namespace AugmentedCooking.src.Converters.Controls.Tabs.ToolsTab {
     class IsRunningButtonStringConverter : IValueConverter {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            return (bool) value ? "Stop" : "Start";
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo c) {
+            if (value is bool b)
+                return b ? "Stop" : "Start";
+            return "Start";
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo c) {
             throw new NotImplementedException();
         }
     }

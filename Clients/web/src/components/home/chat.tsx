@@ -177,31 +177,29 @@ const Chat = () => {
   );
 
   return (
-    <div className="flex justify-center h-full w-full dark:bg-[#212121] pb-2">
-      <div className="w-full max-w-[768px] h-full flex flex-col px-4">
-        {messages.length === 0 && (
-          <div className="flex flex-col mt-auto mb-12 gap-2">
-            <h1 className="text-center text-4xl font-bold text-white">Welcome to MeLLama</h1>
-            <h2 className="text-center text-1xl text-white">Your very own cooking AI assistant</h2>
-          </div>
-        )}
-        <div
-          ref={messagesContainerRef}
-          className={`flex flex-col gap-6 mb-4 max-h-full overflow-y-auto scrollbar-redesign dark:scrollbar-redesign-dark scroll-smooth max-w-full ${
-            messages.length !== 0 ? "mt-auto" : ""
-          }`}
-        >
-          {messages.map((msg) => (
-            <Message key={msg.id} message={msg} />
-          ))}
-          {isPendingChat && <LoadingMessageBubble />}
-          {isErrorChat && <ErrorMessage message={chatError?.error} />}
+    <>
+      {messages.length === 0 && (
+        <div className="flex flex-col mt-auto mb-12 gap-2">
+          <h1 className="text-center text-4xl font-bold text-white">Welcome to MeLLama</h1>
+          <h2 className="text-center text-1xl text-white">Your very own cooking AI assistant</h2>
         </div>
-        <div className="mb-auto">
-          <ChatTextBox sendMessage={handleSendMessage} disabled={isPendingChat} onAbort={chatAbort} />
-        </div>
+      )}
+      <div
+        ref={messagesContainerRef}
+        className={`flex flex-col gap-6 max-h-full overflow-y-auto scrollbar-redesign dark:scrollbar-redesign-dark scroll-smooth max-w-full ${
+          messages.length !== 0 ? "mt-auto" : ""
+        }`}
+      >
+        {messages.map((msg) => (
+          <Message key={msg.id} message={msg} />
+        ))}
+        {isPendingChat && <LoadingMessageBubble />}
+        {isErrorChat && <ErrorMessage message={chatError?.error} />}
       </div>
-    </div>
+      <div className="mb-auto">
+        <ChatTextBox sendMessage={handleSendMessage} disabled={isPendingChat} onAbort={chatAbort} />
+      </div>
+    </>
   );
 };
 

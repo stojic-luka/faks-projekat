@@ -1,10 +1,10 @@
-﻿using DesktopClient.src.Helpers;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using AugmentedCooking.src.Helpers;
 
-namespace DesktopClient.src.ViewModels.Controls.Tabs.ToolsTab {
-    internal class StopwatchViewModel : INotifyPropertyChanged {
+namespace AugmentedCooking.src.ViewModels.Controls.Tabs.ToolsTab {
+    public class StopwatchViewModel : BaseViewModel {
         private readonly System.Timers.Timer _timer;
         private int _timeSeconds;
         private bool _isRunning;
@@ -62,7 +62,8 @@ namespace DesktopClient.src.ViewModels.Controls.Tabs.ToolsTab {
                     if (!IsRunning) {
                         _timer.Start();
                         IsRunning = true;
-                    } else {
+                    }
+                    else {
                         _timer.Stop();
                         IsRunning = false;
                     }
@@ -95,11 +96,6 @@ namespace DesktopClient.src.ViewModels.Controls.Tabs.ToolsTab {
             _timer.Stop();
             TimeSeconds = 0;
             System.Diagnostics.Trace.WriteLine("Reset");
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "") {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -8,7 +8,7 @@ export const useFetchFavoriteRecipes = () => {
   return useInfiniteQuery<
     ApiResponseData<Recipe[]>, // TQueryFnData
     ApiResponseError, // TError
-    InfiniteData<Recipe, unknown>, // TData
+    InfiniteData<ApiResponseData<Recipe[]>, unknown>, // TData
     QueryKey, // TQueryKey
     number // TPageParam
   >({
@@ -16,5 +16,6 @@ export const useFetchFavoriteRecipes = () => {
     queryFn: ({ pageParam }) => getFavoriteRecipes({ page: pageParam, limit: GlobalConsts.pageSize }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, _, lastPageParam) => (lastPage.data.length === 0 ? undefined : lastPageParam + 1),
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

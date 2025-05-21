@@ -1,1 +1,2 @@
-export { useIndexedDB } from "./useIndexedDb";
+export { default as useIndexedDB } from "./useIndexedDB";
+export { default as useDebounce } from "./useDebounce";

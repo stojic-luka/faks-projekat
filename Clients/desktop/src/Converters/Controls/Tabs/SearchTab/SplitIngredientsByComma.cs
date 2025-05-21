@@ -1,13 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Windows.Data;
 
-namespace DesktopClient.src.Converters.Controls.Tabs.SearchTab {
+namespace AugmentedCooking.src.Converters.Controls.Tabs.SearchTab {
     class SplitIngredientsByComma : IValueConverter {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo c) {
             throw new NotImplementedException();
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo c) {
             if (value is not string)
                 return Array.Empty<string>();
 
@@ -18,8 +18,7 @@ namespace DesktopClient.src.Converters.Controls.Tabs.SearchTab {
                         .Select(s => s.Trim())
                         .Where(s => !string.IsNullOrEmpty(s))
                         .ToArray()
-                    );
-
+                );
 
             return Array.Empty<string>();
         }

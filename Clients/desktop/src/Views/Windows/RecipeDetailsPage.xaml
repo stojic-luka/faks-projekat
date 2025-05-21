@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AugmentedCooking.src.Views.Windows.RecipeDetailsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:AugmentedCooking.src.Converters.Controls.Tabs.SearchTab"
+    Title="Recipe Details"
+    BackgroundColor="White">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:Base64ToImageSourceConverter
+                x:Key="Base64ToImageSourceConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid
+        Margin="20"
+        RowDefinitions="Auto,260,*"
+        ColumnDefinitions="*">
+
+        <Grid
+            Grid.Row="0"
+            Margin="0,0,0,10"
+            ColumnDefinitions="*,100">
+            <Label
+                Grid.Column="0"
+                Text="{Binding Title}"
+                HorizontalOptions="Center"
+                FontSize="16"
+                FontAttributes="Bold"/>
+            <Button
+                Grid.Column="1"
+                Text="Sync with Glasses"
+                Command="{Binding SyncWithGlassesCommand}"
+                CommandParameter="{Binding Recipe}"
+                HorizontalOptions="End"
+                VerticalOptions="End"/>
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            Margin="0,10,0,10"
+            ColumnDefinitions="*,375">
+            <ScrollView
+                Grid.Column="0"
+                Margin="0,0,10,0">
+                <Label
+                    Text="{Binding Ingredients}"
+                    LineBreakMode="WordWrap"/>
+            </ScrollView>
+            <Image
+                Grid.Column="1"
+                Margin="10"
+                Aspect="AspectFit"
+                Source="{Binding Recipe.Image,
+                 Converter={StaticResource Base64ToImageSourceConverter}}"/>
+        </Grid>
+
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout>
+                <Label
+                    Text="Instructions:"
+                    FontAttributes="Bold"
+                    Margin="0,0,0,5"/>
+                <Label
+                    Text="{Binding Instructions}"
+                    LineBreakMode="WordWrap"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

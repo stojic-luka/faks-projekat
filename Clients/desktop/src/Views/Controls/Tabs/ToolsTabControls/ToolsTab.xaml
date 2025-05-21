@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="AugmentedCooking.src.Views.Controls.Tabs.ToolsTab"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolTabControls="clr-namespace:AugmentedCooking.src.Views.Controls.Tabs.ToolsTabControls"
+    BackgroundColor="#171717">
+
+    <ScrollView>
+        <Grid
+            HorizontalOptions="Fill"
+            RowDefinitions="300,10,*"
+            ColumnDefinitions="200,10,*">
+
+            <toolTabControls:StopwatchPanel
+                Grid.Row="0"
+                Grid.Column="0"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"/>
+
+            <BoxView
+                Grid.Row="0"
+                Grid.Column="1"
+                WidthRequest="1"
+                Color="Gray"
+                VerticalOptions="Fill"/>
+
+            <toolTabControls:RandomRecipePanel
+                Grid.Row="0"
+                Grid.Column="2"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"/>
+
+            <BoxView
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                HeightRequest="1"
+                Color="Gray"
+                HorizontalOptions="Fill"/>
+
+            <toolTabControls:FavoriteRecipesPanel
+                Grid.Row="2"
+                Grid.ColumnSpan="3"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start"/>
+
+        </Grid>
+    </ScrollView>
+</ContentView>

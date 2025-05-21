@@ -1,19 +1,15 @@
-﻿using AugmentedCooking.src.Models;
-using DesktopClient.src.Helpers;
-using DesktopClient.src.Services;
-using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Input;
+using AugmentedCooking.src.Helpers;
+using AugmentedCooking.src.Models;
+using AugmentedCooking.src.Services;
 
-namespace DesktopClient.src.ViewModels.Windows {
-    internal class RecipeDetailsViewModel {
+namespace AugmentedCooking.src.ViewModels.Windows {
+    internal class RecipeDetailsViewModel : BaseViewModel {
         public Recipe Recipe { get; }
         public string Title { get; }
         public string Ingredients { get; }
         public string Instructions { get; }
-        public BitmapImage Image { get; }
+        public Image Image { get; }
 
         public ICommand SyncWithGlassesCommand { get; }
 
@@ -24,14 +20,10 @@ namespace DesktopClient.src.ViewModels.Windows {
             Ingredients = string.Join(";\n", recipe.Ingredients);
             Instructions = recipe.Instructions;
 
-            byte[] imageBytes = Convert.FromBase64String((string)recipe.Image);
-            Image = new BitmapImage();
-            using (var stream = new System.IO.MemoryStream(imageBytes)) {
-                Image.BeginInit();
-                Image.StreamSource = stream;
-                Image.CacheOption = BitmapCacheOption.OnLoad;
-                Image.EndInit();
-            }
+            byte[] imageBytes = Convert.FromBase64String((string) recipe.Image);
+            Image = new Image {
+                Source = ImageSource.FromStream(() => new MemoryStream(imageBytes)),
+            };
 
             SyncWithGlassesCommand = new RelayCommand(
                 SyncWithGlasses,
@@ -39,7 +31,8 @@ namespace DesktopClient.src.ViewModels.Windows {
             );
         }
 
-        private TcpServerService server;
+        private TcpServerService? server;
+
         private async void SyncWithGlasses(object parameter) {
             if (parameter is Recipe recipeToSync) {
                 server = new TcpServerService(port: 5000) { RecipeToSync = recipeToSync };
@@ -57,10 +50,5 @@ namespace DesktopClient.src.ViewModels.Windows {
         }
 
         public void StopTcpServer() => server?.StopServer();
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "") {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

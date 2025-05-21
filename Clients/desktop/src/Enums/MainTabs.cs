@@ -1,8 +1,9 @@
-﻿namespace DesktopClient.src.Enums {
+﻿namespace AugmentedCooking.src.Enums {
     public enum MainTabs {
         Home,
         Search,
         Tools,
-        Submit
+        Submit,
+        Login,
     }
 }

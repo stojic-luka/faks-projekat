@@ -28,8 +28,8 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://user:password@172.29.15.166:27027/recipes?authSource=admin
-      host: 172.29.15.166
+      uri: mongodb://user:password@192.168.7.213:27027/recipes?authSource=admin
+      host: 192.168.7.213
       port: 27027
       username: user
       password: password
@@ -37,7 +37,7 @@ spring:
       authentication-database: admin
 
   rabbitmq:
-    host: 172.29.15.166
+    host: 192.168.7.213
     port: 5672
     username: user
     password: pass
@@ -48,12 +48,12 @@ spring:
 
 jwt:
   access:
-    privateKey: MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgOrVlRAW6Bq+LRmPjmR7iO61feVBUV+BYxv+ZM64SmXehRANCAAQGwtAOslEw2ZctC+PqedBkTm8liswMBi6hN5tm8hJGwLVpKroC68rcKtuRrYt7VBgSg2E12Dn2tvexWC13W7dm
-    publicKey: MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEBsLQDrJRMNmXLQvj6nnQZE5vJYrMDAYuoTebZvISRsC1aSq6AuvK3Crbka2Le1QYEoNhNdg59rb3sVgtd1u3Zg==
+    private-key: MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgOrVlRAW6Bq+LRmPjmR7iO61feVBUV+BYxv+ZM64SmXehRANCAAQGwtAOslEw2ZctC+PqedBkTm8liswMBi6hN5tm8hJGwLVpKroC68rcKtuRrYt7VBgSg2E12Dn2tvexWC13W7dm
+    public-key: MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEBsLQDrJRMNmXLQvj6nnQZE5vJYrMDAYuoTebZvISRsC1aSq6AuvK3Crbka2Le1QYEoNhNdg59rb3sVgtd1u3Zg==
 
   refresh:
-    privateKey: MIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIBXBJ0TovlpwKR/PKjA2ZzU+qFhdBsQw6mSbH7kmmuBMG2gWAG6j9FOlVGcSdVTZT7Bj0NgQGVaZiwbfEwVPqmicKhgYkDgYYABAE266dcQZ3493oS876x3zpJLb8wIgZI3nPqfeqpWKyhLcwgEssFey3NzxtD/bMqGZR2WIRWOnlf6wdh3/ozltCRvQGHBTuBiz25Zvqft2nVx0SNj7HOajuPYA+csi9dzn+kjrufyTekBwH5hcMNQ/MMw/p3WKIjeyRBQW+Zg5dZLNjgXA==
-    publicKey: MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBNuunXEGd+Pd6EvO+sd86SS2/MCIGSN5z6n3qqVisoS3MIBLLBXstzc8bQ/2zKhmUdliEVjp5X+sHYd/6M5bQkb0BhwU7gYs9uWb6n7dp1cdEjY+xzmo7j2APnLIvXc5/pI67n8k3pAcB+YXDDUPzDMP6d1iiI3skQUFvmYOXWSzY4Fw=
+    private-key: MIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIBXBJ0TovlpwKR/PKjA2ZzU+qFhdBsQw6mSbH7kmmuBMG2gWAG6j9FOlVGcSdVTZT7Bj0NgQGVaZiwbfEwVPqmicKhgYkDgYYABAE266dcQZ3493oS876x3zpJLb8wIgZI3nPqfeqpWKyhLcwgEssFey3NzxtD/bMqGZR2WIRWOnlf6wdh3/ozltCRvQGHBTuBiz25Zvqft2nVx0SNj7HOajuPYA+csi9dzn+kjrufyTekBwH5hcMNQ/MMw/p3WKIjeyRBQW+Zg5dZLNjgXA==
+    public-key: MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBNuunXEGd+Pd6EvO+sd86SS2/MCIGSN5z6n3qqVisoS3MIBLLBXstzc8bQ/2zKhmUdliEVjp5X+sHYd/6M5bQkb0BhwU7gYs9uWb6n7dp1cdEjY+xzmo7j2APnLIvXc5/pI67n8k3pAcB+YXDDUPzDMP6d1iiI3skQUFvmYOXWSzY4Fw=
 
   # access:
   #   privateKey: classpath:secret/ecc-access-private-256.pem
@@ -64,7 +64,7 @@ jwt:
   #   publicKey: classpath:secret/ecc-refresh-public-512.pem
 
 rabbitmq:
-  rabbitMQHost: 172.29.15.166
+  rabbitMQHost: 192.168.7.213
   rabbitMQPort: 5672
   rabbitMQUser: user
   rabbitMQPass: pass

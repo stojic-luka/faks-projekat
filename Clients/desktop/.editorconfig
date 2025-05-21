@@ -1,0 +1,80 @@
+# Top-most EditorConfig file
+root = true
+
+# All files
+[*]
+end_of_line = crlf # Use crlf for .NET projects on Windows, lf for Linux/macOS
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# C# files
+[*.cs]
+indent_style = space
+indent_size = 2
+
+# New line preferences
+csharp_new_line_before_open_brace = false
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+
+# Space preferences
+csharp_space_after_cast = true
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_parentheses = false # e.g. ( T param ) -> (T param)
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_around_binary_operators = before_and_after # e.g. x + y
+csharp_space_around_declaration_statements = false # Note: this is about not adding extra space around the whole statement
+csharp_space_before_comma = false
+csharp_space_after_comma = true
+csharp_space_before_dot = false
+csharp_space_after_dot = false
+csharp_space_before_semicolon = false
+
+# Indentation preferences
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+csharp_indent_case_contents = true
+csharp_indent_labels = one_less_than_current
+
+# Wrapping preferences (these can be more subjective)
+# csharp_preserve_single_line_blocks = true
+# csharp_preserve_single_line_statements = true
+
+# using directive preferences
+dotnet_sort_system_directives_first = true
+csharp_using_directive_placement = outside_namespace # or inside_namespace
+
+# Modifier preferences
+dotnet_style_require_accessibility_modifiers = always # 'always' or 'for_non_interface_members' or 'never'
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async
+
+# Expression-bodied members (can make code more concise but sometimes harder to debug)
+# csharp_style_expression_bodied_methods = when_on_single_line
+# csharp_style_expression_bodied_constructors = when_on_single_line
+# csharp_style_expression_bodied_operators = when_on_single_line
+# csharp_style_expression_bodied_properties = true
+# csharp_style_expression_bodied_indexers = true
+# csharp_style_expression_bodied_accessors = true
+# csharp_style_expression_bodied_lambdas = true # C# 9.0+
+
+# var preferences
+csharp_style_var_for_built_in_types = false
+csharp_style_var_when_type_is_apparent = true
+csharp_style_var_elsewhere = true
+
+# Unnecessary code
+dotnet_remove_unnecessary_suppression_exclusions = true
+
+# Code style enforcement (optional: set severity to warning or error to see in IDE/build)
+# Example: Make a style rule a warning
+# dotnet_diagnostic.IDE0001.severity = warning
+# dotnet_diagnostic.IDE0040.severity = warning # Add accessibility modifiers
+
+# You can find a full list of .NET code style rule options here:
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/editorconfig-code-style-settings-for-dotnet

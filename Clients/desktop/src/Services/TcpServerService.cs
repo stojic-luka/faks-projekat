@@ -1,10 +1,10 @@
-﻿using System.Net.Sockets;
+﻿using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using AugmentedCooking.src.Models;
-using System.IO;
 
-namespace DesktopClient.src.Services {
+namespace AugmentedCooking.src.Services {
     public class TcpServerService(int port) {
         private readonly TcpListener _server = new(IPAddress.Any, port);
         private bool IsRunning;
@@ -21,13 +21,16 @@ namespace DesktopClient.src.Services {
                 while (IsRunning && !cancellationToken.IsCancellationRequested) {
                     TcpClient? client = await AcceptSingleClientAsync(cancellationToken);
                     if (client != null) {
-                        _ = Task.Run(() => HandleClientAsync(client, cancellationToken), cancellationToken);
+                        _ = Task.Run(
+                            () => HandleClientAsync(client, cancellationToken),
+                            cancellationToken
+                        );
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 Console.WriteLine($"Error starting server: {ex.Message}");
             }
-
         }
 
         private async Task<TcpClient?> AcceptSingleClientAsync(CancellationToken cancellationToken) {
@@ -37,9 +40,8 @@ namespace DesktopClient.src.Services {
                         return await _server.AcceptTcpClientAsync(cancellationToken);
                     else
                         await Task.Delay(1000, cancellationToken);
-                } catch {
-                    return null;
                 }
+                catch { return null; }
             }
             return null;
         }
@@ -62,9 +64,11 @@ namespace DesktopClient.src.Services {
 
                     string? response = received switch {
                         "SYNC" => "SYNCED",
-                        "NEXT" => currentIndex == 0 ? RecipeToSync.Title : RecipeToSync.Ingredients.ElementAtOrDefault(currentIndex) ?? "END",
+                        "NEXT" => currentIndex == 0
+                            ? RecipeToSync.Title
+                            : RecipeToSync.Ingredients.ElementAtOrDefault(currentIndex) ?? "END",
                         "DISCONNECT" => "DISCONNECTING",
-                        _ => null
+                        _ => null,
                     };
 
                     if (received == "DISCONNECT" || response == null)
@@ -73,9 +77,11 @@ namespace DesktopClient.src.Services {
                     byte[] responseBytes = Encoding.ASCII.GetBytes(response);
                     await stream.WriteAsync(responseBytes, cancellationToken);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 Console.WriteLine($"Client error: {ex.Message}");
-            } finally {
+            }
+            finally {
                 StopServer();
             }
         }
@@ -89,7 +95,8 @@ namespace DesktopClient.src.Services {
                 IsRunning = false;
                 _server.Stop();
                 Console.WriteLine("Server stopped.");
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 Console.WriteLine($"Error stopping server: {ex.Message}");
             }
         }

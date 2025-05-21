@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.augmentedcooking.Config.Security.JwtSecretsConfig;
 import com.augmentedcooking.Managers.Security.JwtKeyManager;
+import com.augmentedcooking.Models.Auth.Jwt.ECKeyPair;
 import com.augmentedcooking.Models.Database.User.User;
-import com.augmentedcooking.Models.Jwt.ECKeyPair;
 import com.augmentedcooking.Utils.base.IJwtUtils;
 
 import io.jsonwebtoken.Claims;
@@ -21,9 +21,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Service
 public class JwtUtils implements IJwtUtils {
 
-    private static ECKeyPair ACCESS_TOKEN_KEYS, REFRESH_TOKEN_KEYS;
-    private long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 1 day
-    private long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 5; // 5 days
+    private final ECKeyPair ACCESS_TOKEN_KEYS, REFRESH_TOKEN_KEYS;
+
+    public static final long ACCESS_TOKEN_EXPIRATION = 60 * 60 * 24; // 1 day
+    public static final long REFRESH_TOKEN_EXPIRATION = 60 * 60 * 24 * 5; // 5 days
 
     @Autowired
     public JwtUtils(JwtSecretsConfig jwtSecretsConfig) {
@@ -53,7 +54,7 @@ public class JwtUtils implements IJwtUtils {
         claims.setSubject(user.getId().toString());
         claims.put("roles", user.getRoles());
 
-        return generate(claims, ACCESS_TOKEN_KEYS, ACCESS_TOKEN_EXPIRATION_TIME, SignatureAlgorithm.ES256);
+        return generate(claims, ACCESS_TOKEN_KEYS, ACCESS_TOKEN_EXPIRATION, SignatureAlgorithm.ES256);
     }
 
     /**
@@ -68,13 +69,13 @@ public class JwtUtils implements IJwtUtils {
         Claims claims = Jwts.claims();
         claims.setSubject(user.getId().toString());
 
-        return generate(claims, REFRESH_TOKEN_KEYS, REFRESH_TOKEN_EXPIRATION_TIME, SignatureAlgorithm.ES512);
+        return generate(claims, REFRESH_TOKEN_KEYS, REFRESH_TOKEN_EXPIRATION, SignatureAlgorithm.ES512);
     }
 
     private String generate(Claims claims, ECKeyPair keyPair, long expirationTime, SignatureAlgorithm algorithm) {
         long currentTimeMillis = Instant.now().toEpochMilli();
         claims.setIssuedAt(new Date(currentTimeMillis));
-        claims.setExpiration(new Date(currentTimeMillis + expirationTime));
+        claims.setExpiration(new Date(currentTimeMillis + expirationTime * 1000));
 
         return Jwts.builder()
                 .setClaims(claims)

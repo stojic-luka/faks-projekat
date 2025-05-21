@@ -8,49 +8,52 @@ interface Props {
 }
 const RecipeDisplay = ({ recipe, openInDesktopButtonVisible = false }: Props) => {
   const handleOpenDesktopApp = useCallback(() => {
-    window.open("augmentedcooking://recipe/" + recipe?.id);
+    if (recipe?.id) {
+      window.open(`augmentedcooking://recipe/${recipe.id}`);
+    } else {
+      alert("An error occurred while opening the recipe in the desktop app.");
+    }
   }, [recipe?.id]);
 
   return (
-    <>
-      <div className="bg-white p-6 rounded-lg">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-          <h1 className="text-2xl font-bold text-gray-800 text-center md:text-left">{recipe?.title || "Recipe Title"}</h1>
-          {openInDesktopButtonVisible && (
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={() => handleOpenDesktopApp()}>
-              Open in desktop app
-            </button>
+    <div className="p-4 shadow-md rounded-lg border dark:border-neutral-700 bg-[#f4f4f4] dark:bg-[#292929] focus:outline-none">
+      <div className="flex justify-between mb-4">
+        <h1 className="text-xl h-auto my-auto font-bold text-gray-800 dark:text-white">{recipe?.title || "Recipe Title"}</h1>
+        {openInDesktopButtonVisible && (
+          <button
+            className="bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 transition-colors duration-200 mt-4 md:mt-0 text-sm whitespace-nowrap"
+            onClick={handleOpenDesktopApp}
+          >
+            Open in desktop app
+          </button>
+        )}
+      </div>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="md:w-1/2 h-64 overflow-y-auto scrollbar-redesign dark:scrollbar-redesign-dark p-4 bg-white dark:bg-[#212121] rounded-lg border dark:border-neutral-700">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Ingredients</h2>
+          {recipe?.ingredients && recipe.ingredients.length > 0 ? (
+            <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
+              {recipe.ingredients.map((ingredient, index) => (
+                <li key={index}>{ingredient}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-600 dark:text-gray-400">No ingredients listed.</p>
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="overflow-y-auto pr-2 max-h-64">
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">Ingredients</h2>
-            <ul className="list-disc list-inside text-gray-600">
-              {recipe?.ingredients.map((ingredient, index) => (
-                <li key={index} className="mb-1">
-                  {ingredient}
-                </li>
-              )) || <p>No ingredients listed.</p>}
-            </ul>
-          </div>
-          <div className="flex justify-center items-center">
-            {recipe?.image ? (
-              <img
-                src={`data:image/jpeg;base64,${recipe?.image}`}
-                alt="Recipe"
-                className="max-w-full max-h-64 object-cover border border-gray-200 rounded-md"
-              />
-            ) : (
-              <SmallestImage />
-            )}
-          </div>
-        </div>
-        <div className="overflow-y-auto max-h-64">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Instructions</h2>
-          <p className="whitespace-pre-wrap text-gray-600 leading-relaxed">{recipe?.instructions || "No instructions provided."}</p>
+        <div className="md:w-1/2 h-64 flex items-center justify-center bg-white dark:bg-[#212121] rounded-lg overflow-hidden border dark:border-neutral-700">
+          {recipe?.image ? (
+            <img src={`data:image/jpeg;base64,${recipe.image.data}`} alt="Recipe" className="object-cover w-full h-full" />
+          ) : (
+            <SmallestImage />
+          )}
         </div>
       </div>
-    </>
+      <div className="mt-4 h-64 overflow-y-auto p-4 bg-white dark:bg-[#212121] rounded-lg border scrollbar-redesign dark:scrollbar-redesign-dark dark:border-neutral-700">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Instructions</h2>
+        <p className="text-gray-700 dark:text-gray-300">{recipe?.instructions || "No instructions provided."}</p>
+      </div>
+    </div>
   );
 };
 

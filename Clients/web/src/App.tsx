@@ -6,13 +6,15 @@ import { lazy, Suspense } from "react";
 const HomePageLazy = lazy(() => import("./pages/home"));
 const SearchPageLazy = lazy(() => import("./pages/search"));
 const ToolsPageLazy = lazy(() => import("./pages/tools"));
+const AdminPageLazy = lazy(() => import("./pages/admin"));
 const SignInPageLazy = lazy(() => import("./pages/signIn"));
+const NotFoundPageLazy = lazy(() => import("./pages/notFound"));
 
 const Layout = () => {
   return (
     <>
       <Navbar />
-      <div className="flex h-[calc(100%-48px)] w-full">
+      <div className="flex min-h-[calc(100%-48px)] w-full">
         <Outlet />
       </div>
     </>
@@ -20,28 +22,27 @@ const Layout = () => {
 };
 
 const App = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAdmin, isAuthenticated } = useAuth();
 
   return (
-    <>
-      <div className="flex flex-col h-full w-full">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Router>
-            <Routes>
-              <Route path="/signin" element={isAuthenticated ? <Navigate to="/" replace /> : <SignInPageLazy />} />
-              <Route element={isAuthenticated ? <Outlet /> : <SignInPageLazy />}>
-                <Route element={<Layout />}>
-                  <Route path="/" element={<HomePageLazy />} />
-                  <Route path="/search" element={<SearchPageLazy />} />
-                  <Route path="/tools" element={<ToolsPageLazy />} />
-                </Route>
-              </Route>
-              <Route path="*" element={<div>nemaaa</div>} />
-            </Routes>
-          </Router>
-        </Suspense>
-      </div>
-    </>
+    <div className="flex flex-col h-full w-full dark:bg-[#212121]">
+      <Suspense fallback={<div>Loading...</div>}>
+        <Router>
+          <Routes>
+            <Route path="/signin" element={!isAuthenticated ? <SignInPageLazy /> : <Navigate to="/" replace />} />
+            <Route element={isAuthenticated ? <Layout /> : <Navigate to="/signin" replace />}>
+              <Route index element={<HomePageLazy />} />
+              <Route path="search" element={<SearchPageLazy />} />
+              <Route path="tools" element={<ToolsPageLazy />} />
+              <Route path="admin" element={isAdmin ? <AdminPageLazy /> : <Navigate to={"/404"} replace />} />
+              <Route path="404" element={<NotFoundPageLazy />} />
+              <Route path="*" element={<Navigate to={"/404"} replace />} />
+            </Route>
+            <Route path="*" element={<Navigate to={"/signin"} replace />} />
+          </Routes>
+        </Router>
+      </Suspense>
+    </div>
   );
 };
 

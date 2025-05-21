@@ -9,6 +9,7 @@ import com.augmentedcooking.Exceptions.BaseResponseException;
 import com.augmentedcooking.Exceptions.User.InvalidCredentialsException;
 import com.augmentedcooking.Exceptions.User.UserAlreadyExistException;
 import com.augmentedcooking.Exceptions.User.UserNotFoundException;
+import com.augmentedcooking.Models.Auth.Oauth2.AuthorizationCode;
 import com.augmentedcooking.Models.Database.User.User;
 import com.augmentedcooking.Models.Response.Auth.Dto.TokensDto;
 import com.augmentedcooking.Models.Response.Auth.Dto.UserTokensDto;
@@ -26,9 +27,24 @@ public class AuthService implements IAuthService {
     private final IJwtUtils jwtUtils;
 
     @Autowired
-    public AuthService(final IUserRepository userRepository, IJwtUtils jwtUtils) {
+    public AuthService(final IUserRepository userRepository, final IJwtUtils jwtUtils) {
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
+    }
+
+    @Override
+    public User authenticate(String identifier, String password) {
+        Optional<User> userOptional = userRepository.findByEmail(identifier);
+        if (userOptional.isEmpty())
+            userOptional = userRepository.findByUsername(identifier);
+        if (userOptional.isEmpty())
+            throw (BaseResponseException) new UserNotFoundException();
+
+        User user = userOptional.get();
+        if (!Passwords.isValid(password.toCharArray(), user.getSalt(), user.getPasswordHash()))
+            throw (BaseResponseException) new InvalidCredentialsException();
+
+        return user;
     }
 
     @Override
@@ -79,5 +95,28 @@ public class AuthService implements IAuthService {
         return new TokensDto(
                 jwtUtils.generateAccess(user),
                 jwtUtils.generateRefresh(user));
+    }
+
+    @Override
+    public TokensDto oauth2Login(AuthorizationCode authCode) {
+        Optional<User> userOptional = userRepository.findById(CUID.fromString(authCode.getUserId()));
+        if (userOptional.isEmpty())
+            return null;
+
+        User user = userOptional.get();
+        return new TokensDto(
+                jwtUtils.generateAccess(user),
+                jwtUtils.generateRefresh(user));
+    }
+
+    @Override
+    public TokensDto oauth2Signin(String refreshToken, String clientId) {
+        throw new UnsupportedOperationException("Unimplemented method 'oauth2Signin'");
+    }
+
+    @Override
+    public TokensDto oauth2Refresh(String refreshToken, String clientId) {
+
+        throw new UnsupportedOperationException("Unimplemented method 'oauth2Refresh'");
     }
 }

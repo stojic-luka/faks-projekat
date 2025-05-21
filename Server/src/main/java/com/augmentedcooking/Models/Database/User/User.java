@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.augmentedcooking.Containts.Constants;
 import com.augmentedcooking.Utils.impl.Passwords;
 
 import io.github.thibaultmeyer.cuid.CUID;
@@ -18,7 +19,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@Document(collection = "users")
+@Document(collection = Constants.DB.Collections.USERS)
 public class User {
 
     @Id
@@ -28,6 +29,7 @@ public class User {
     private byte[] passwordHash;
     private byte[] salt;
     private List<String> roles;
+    private String clientId;
     private long createdAt;
     private long updatedAt;
 

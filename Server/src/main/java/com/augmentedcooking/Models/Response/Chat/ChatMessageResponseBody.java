@@ -83,23 +83,21 @@ public class ChatMessageResponseBody {
 
             private String data;
             private String format;
-            private int width;
-            private int height;
+            private MessageContent.ChatImage.Metadata metadata;
             private String description;
 
             public ChatImageResponseBody(ChatImage chatImage) {
                 this.data = Base64.getEncoder().encodeToString(chatImage.getData());
                 this.format = chatImage.getFormat();
-                this.width = chatImage.getWidth();
-                this.height = chatImage.getHeight();
+                this.metadata = chatImage.getMetadata();
                 this.description = chatImage.getDescription();
             }
 
-            public ChatImageResponseBody(byte[] data, String format, int width, int height, String description) {
+            public ChatImageResponseBody(byte[] data, String format, MessageContent.ChatImage.Metadata metadata,
+                    String description) {
                 this.data = Base64.getEncoder().encodeToString(data);
                 this.format = format;
-                this.width = width;
-                this.height = height;
+                this.metadata = metadata;
                 this.description = description;
             }
         }

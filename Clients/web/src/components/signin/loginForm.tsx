@@ -5,6 +5,8 @@ import PasswordSvg from "../../assets/svg/password.svg?react";
 import OpenEyeSvg from "../../assets/svg/open_eye.svg?react";
 import ClosedEyeSvg from "../../assets/svg/closed_eye.svg?react";
 import { useAuth } from "../../contexts/useAuth";
+import { useOAuthParams } from "../../hooks/auth/useOAuthParams";
+import { AuthData } from "../../types/authTypes";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +15,7 @@ const LoginForm = () => {
     password: "",
   });
 
+  const oauth = useOAuthParams();
   const {
     login: { mutate: loginMutate, isPending: isLoginPending, isError: isLoginError, error: loginError },
   } = useAuth();
@@ -25,9 +28,23 @@ const LoginForm = () => {
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      loginMutate({ username: formData.email, password: formData.password });
+
+      const loginData: AuthData = {
+        credentials: { username: formData.email, password: formData.password },
+      };
+      if (oauth && oauth.client_id && oauth.redirect_uri && oauth.code_challenge && oauth.code_challenge_method) {
+        loginData.params = {
+          client_id: oauth.client_id,
+          redirect_uri: oauth.redirect_uri,
+          code_challenge: oauth.code_challenge,
+          code_challenge_method: oauth.code_challenge_method,
+        };
+        if (oauth.scope) loginData.params.scope = oauth.scope;
+        if (oauth.state) loginData.params.state = oauth.state;
+      }
+      loginMutate(loginData);
     },
-    [formData, loginMutate]
+    [formData, loginMutate, oauth]
   );
 
   return (
@@ -69,7 +86,7 @@ const LoginForm = () => {
             </a>
           </div>
         </div>
-        {isLoginError && <span className="text-red-600">{`${loginError.error.code}: ${loginError.error.message}`}</span>}
+        {isLoginError && loginError && <span className="text-red-600">{`${loginError.error.code}: ${loginError.error.message}`}</span>}
         <button type="submit" className="bg-blue-600 py-2 px-5 rounded-md font-bold text-white" disabled={isLoginPending}>
           Login
         </button>

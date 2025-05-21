@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="AugmentedCooking.src.Views.Controls.Tabs.ToolsTabControls.Clock"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls">
+
+    <Grid
+        WidthRequest="150"
+        HeightRequest="150"
+        RowDefinitions="*,*"
+        ColumnDefinitions="*,*">
+
+        <shapes:Ellipse
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            Stroke="Black"
+            StrokeThickness="1"
+            Fill="Transparent"/>
+
+        <shapes:Rectangle
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            WidthRequest="2"
+            HeightRequest="40"
+            Fill="Gray"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            Rotation="{Binding HourAngle}"
+            AnchorX="0.5"
+            AnchorY="1">
+        </shapes:Rectangle>
+
+        <shapes:Rectangle
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            WidthRequest="2"
+            HeightRequest="50"
+            Fill="LightGray"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            Rotation="{Binding MinuteAngle}"
+            AnchorX="0.5"
+            AnchorY="1">
+        </shapes:Rectangle>
+
+        <shapes:Rectangle
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            WidthRequest="2"
+            HeightRequest="60"
+            Fill="Red"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            Rotation="{Binding SecondAngle}"
+            AnchorX="0.5"
+            AnchorY="1">
+        </shapes:Rectangle>
+
+    </Grid>
+</ContentView>

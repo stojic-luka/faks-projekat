@@ -82,7 +82,7 @@
     @apply flex flex-col rounded-xl border border-neutral-200 dark:border-neutral-700;
   }
   .bot-reply pre code {
-    @apply text-neutral-100 rounded-b-xl font-mono text-sm bg-neutral-900 p-4 overflow-x-auto scrollbar-redesign dark:scrollbar-redesign-dark;
+    @apply text-neutral-100 rounded-b-xl font-mono text-sm bg-neutral-950 p-4 overflow-x-auto scrollbar-redesign dark:scrollbar-redesign-dark;
   }
   .bot-reply pre code::-webkit-scrollbar-track,
   .bot-reply pre code::-webkit-scrollbar-thumb {
@@ -167,5 +167,8 @@
   }
   #main-navbar ul:has(li:nth-child(3) .active) ~ .navbar-follow-line {
     left: calc(2 * (var(--nav-button-width) + var(--nav-button-gap)));
+  }
+  #main-navbar ul:has(li:nth-child(4) .active) ~ .navbar-follow-line {
+    left: calc(3 * (var(--nav-button-width) + var(--nav-button-gap)));
   }
 }

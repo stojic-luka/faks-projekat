@@ -45,9 +45,9 @@ export const FavoriteRecipes = () => {
       <div>
         <h1>Favorite Recipes</h1>
         <div className="recipes-list">
-          {favoriteRecipes?.pages.map((recipe, index) => (
-            <RecipeCard key={index} recipe={recipe} onClick={() => setSelectedRecipe(recipe)} />
-          ))}
+          {favoriteRecipes?.pages.map((recipe) =>
+            recipe.data.map((recipe, recipeIndex) => <RecipeCard key={recipeIndex} recipe={recipe} onClick={() => setSelectedRecipe(recipe)} />)
+          )}
         </div>
         {(isFetching || isFetchingNextPage) && <p>Loading...</p>}
         {isRecipesError && <ErrorMessage message={recipesError?.error} />}

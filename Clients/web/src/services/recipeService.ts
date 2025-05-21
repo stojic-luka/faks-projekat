@@ -1,5 +1,5 @@
 import authenticatedAxios from "../api/authenticatedAxios";
-import { Recipe, RecipeFilterArguments } from "../types/recipesTypes";
+import { Recipe, RecipeFilterArguments, RecipeInput } from "../types/recipesTypes";
 import { Pagination } from "../types/requestTypes";
 import { ApiResponse, ApiResponseData } from "../types/responseTypes";
 
@@ -54,4 +54,24 @@ export const getFavoriteRecipes = async (pagination: Pagination): Promise<ApiRes
   });
 
   return response.data as ApiResponseData<Recipe[]>;
+};
+
+export const submitRecipe = async (recipe: RecipeInput): Promise<ApiResponseData<Recipe>> => {
+  const response = await authenticatedAxios.post<ApiResponse<Recipe>>("/api/v1/recipe", recipe, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response.data as ApiResponseData<Recipe>;
+};
+
+export const deleteRecipe = async (recipeId: string): Promise<ApiResponseData<Recipe>> => {
+  const response = await authenticatedAxios.delete<ApiResponse<Recipe>>(`/api/v1/recipe/${recipeId}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response.data as ApiResponseData<Recipe>;
 };

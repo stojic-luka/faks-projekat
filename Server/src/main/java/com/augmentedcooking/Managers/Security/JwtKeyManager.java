@@ -11,7 +11,7 @@ import java.util.Base64;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import com.augmentedcooking.Models.Jwt.ECKeyPair;
+import com.augmentedcooking.Models.Auth.Jwt.ECKeyPair;
 
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;

@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }: Props) => {
     refresh,
     logout,
     isAuthenticated: !!user,
+    isAdmin: user ? user.roles.includes("admin") : false,
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

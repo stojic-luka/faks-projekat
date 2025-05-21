@@ -1,8 +1,10 @@
 package com.augmentedcooking.Models.Database.Recipe;
 
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.augmentedcooking.Containts.Constants;
 
 import io.github.thibaultmeyer.cuid.CUID;
 import lombok.AllArgsConstructor;
@@ -18,7 +20,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "recipes")
+@Document(collection = Constants.DB.Collections.RECIPES)
 public class Recipe {
 
     @Id
@@ -26,6 +28,27 @@ public class Recipe {
     private String title;
     private List<String> ingredients;
     private String instructions;
-    @DBRef
-    private List<RecipeImage> image;
+    private RecipeImage recipeImage;
+
+    @Getter
+    @Setter
+    @ToString
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RecipeImage {
+
+        private String contentType;
+        private Binary data;
+        private RecipeImage.Metadata metadata;
+
+        @Getter
+        @Setter
+        @ToString
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class Metadata {
+            private int height;
+            private int width;
+        }
+    }
 }

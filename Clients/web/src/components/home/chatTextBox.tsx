@@ -4,7 +4,7 @@ import GearSvg from "../../assets/svg/gear.svg?react";
 import SendSvg from "../../assets/svg/send.svg?react";
 import SquareSvg from "../../assets/svg/square.svg?react";
 import SettingsMenu from "./settingsMenu";
-import CloseMenuPortal from "../shared/closeMenuPortal";
+import Menu from "../shared/menu";
 
 interface Props {
   sendMessage: (message: string) => void;
@@ -59,7 +59,7 @@ const ChatTextBox = ({ sendMessage, disabled, onAbort }: Props) => {
             </button>
             {isMenuOpen && (
               <>
-                <CloseMenuPortal onClose={() => setIsMenuOpen(false)} overlayClassName="fixed inset-0 bg-transparent z-[49]" />
+                <Menu onClose={() => setIsMenuOpen(false)} overlayClassName="fixed inset-0 bg-transparent z-[49]" />
                 <div className="absolute left-1 bottom-10 z-50">
                   <SettingsMenu />
                 </div>

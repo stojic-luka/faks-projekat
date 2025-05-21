@@ -6,6 +6,9 @@ import PasswordSvg from "../../assets/svg/password.svg?react";
 import OpenEyeSvg from "../../assets/svg/open_eye.svg?react";
 import ClosedEyeSvg from "../../assets/svg/closed_eye.svg?react";
 import { useAuth } from "../../contexts/useAuth";
+import { AuthData } from "../../types/authTypes";
+// import { useNavigate } from "react-router-dom";
+// import { useOAuthParams } from "../../hooks/auth/useOAuthParams";
 
 const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,6 +18,9 @@ const SignupForm = () => {
     password: "",
   });
 
+  // const oauth = useOAuthParams();
+  // const navigate = useNavigate();
+  // TODO: handle oauth signup
   const {
     signup: { mutate: signupMutate, isPending: isSignupPending, isError: isSignupError, error: signupError },
   } = useAuth();
@@ -27,7 +33,11 @@ const SignupForm = () => {
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      signupMutate({ username: formData.email, password: formData.password });
+
+      const signupData: AuthData = {
+        credentials: { username: formData.email, password: formData.password },
+      };
+      signupMutate(signupData);
     },
     [formData, signupMutate]
   );

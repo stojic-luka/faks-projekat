@@ -9,10 +9,13 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.augmentedcooking.Models.Database.Recipe.Recipe;
 import com.augmentedcooking.Utils.impl.CUIDConverter;
+
+import io.github.thibaultmeyer.cuid.CUID;
 
 @Repository
 public class RecipeRepository implements IRecipeRepository {
@@ -26,39 +29,35 @@ public class RecipeRepository implements IRecipeRepository {
 
     @Override
     public List<Recipe> findAll(int page, int limit) {
-        Aggregation aggregation = Aggregation.newAggregation(
-                lookup("recipeImages", "recipeImage", "_id", "image"),
-                skip((long) page * limit),
-                limit(limit));
+        if (page < 0 || limit <= 0)
+            throw new IllegalArgumentException("Page index must not be negative and Limit must be greater than zero!");
 
-        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipes", Recipe.class);
+        long skip = (long) page * limit;
+        Query query = new Query()
+                .skip(skip)
+                .limit(limit);
 
-        return results.getMappedResults();
+        return mongoTemplate.find(query, Recipe.class);
     }
 
     @Override
     public Optional<Recipe> findRandom() {
-        Aggregation aggregation = Aggregation.newAggregation(
-                sample(1),
-                lookup("recipeImages", "recipeImage", "_id", "image"));
-
-        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "recipes", Recipe.class);
-
-        List<Recipe> recipes = results.getMappedResults();
-        return Optional.ofNullable(recipes.isEmpty() ? null : recipes.get(0));
+        AggregationResults<Recipe> results = mongoTemplate.aggregate(
+                Aggregation.newAggregation(Aggregation.sample(1)),
+                mongoTemplate.getCollectionName(Recipe.class),
+                Recipe.class);
+        return Optional.ofNullable(results.getUniqueMappedResult());
     }
 
     @Override
     public List<Recipe> findByIngredients(List<String> ingredients, int page, int limit) {
-        Criteria ingredientCriteria = new Criteria();
-        ingredientCriteria.andOperator(
+        Criteria ingredientCriteria = new Criteria().andOperator(
                 ingredients.stream()
                         .map(ingredient -> Criteria.where("ingredients").regex(".*" + ingredient + ".*", "i"))
                         .toArray(Criteria[]::new));
 
         Aggregation aggregation = Aggregation.newAggregation(
                 match(ingredientCriteria),
-                lookup("recipeImages", "recipeImage", "_id", "image"),
                 skip((long) page * limit),
                 limit(limit));
 
@@ -67,17 +66,39 @@ public class RecipeRepository implements IRecipeRepository {
     }
 
     @Override
-    public List<Recipe> findUserFavorites(String id, int page, int limit) {
-        Aggregation aggregation = Aggregation.newAggregation(
-                match(Criteria.where("_id").is(CUIDConverter.cuidToBytes(id))),
-                lookup("recipes", "recipeId", "_id", "recipe"),
-                unwind("$recipe"),
-                lookup("recipeImages", "recipe.recipeImage", "_id", "recipe.image"),
-                skip((long) page * limit),
-                limit(limit),
-                project("recipe"));
+    public List<Recipe> findUserFavorites(String userId, int page, int limit) {
+        // Aggregation agg = newAggregation(
+        // match(Criteria.where("_id")
+        // .is(CUIDConverter.cuidToBytes(userId))),
+        // lookup("recipes", "recipeId", "_id", "recipe"),
+        // unwind("$recipe"),
+        // replaceRoot("$recipe"),
+        // skip((long) page * limit),
+        // limit(limit));
+        // AggregationResults<Recipe> results = mongoTemplate.aggregate(agg,
+        // FAVORITES_COLLECTION, Recipe.class);
+        // return results.getMappedResults();
 
-        AggregationResults<Recipe> results = mongoTemplate.aggregate(aggregation, "favoriteRecipes", Recipe.class);
-        return results.getMappedResults();
+        Query query = new Query(Criteria.where("_id").is(CUIDConverter.cuidToBytes(userId)))
+                .skip((long) page * limit)
+                .limit(limit);
+
+        return mongoTemplate.find(query, Recipe.class);
+    }
+
+    @Override
+    public Recipe addRecipe(Recipe recipe) {
+        if (recipe == null)
+            throw new IllegalArgumentException("Recipe must not be null!");
+
+        recipe.setId(CUID.randomCUID2());
+
+        return mongoTemplate.insert(recipe);
+    }
+
+    @Override
+    public Recipe deleteRecipe(String recipeId) {
+        Query query = Query.query(Criteria.where("id").is(recipeId));
+        return mongoTemplate.findAndRemove(query, Recipe.class);
     }
 }

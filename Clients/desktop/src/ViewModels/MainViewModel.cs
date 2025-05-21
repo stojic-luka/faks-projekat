@@ -1,10 +1,9 @@
-﻿using DesktopClient.src.Enums;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using AugmentedCooking.src.Enums;
+using AugmentedCooking.src.Helpers;
 
-namespace DesktopClient.src.ViewModels {
-    public class MainViewModel : INotifyPropertyChanged {
-        private MainTabs _currentTab;
+namespace AugmentedCooking.src.ViewModels {
+    public class MainViewModel : BaseViewModel {
+        private MainTabs _currentTab = MainTabs.Home;
         public MainTabs CurrentTab {
             get => _currentTab;
             set {
@@ -13,11 +12,6 @@ namespace DesktopClient.src.ViewModels {
                     OnPropertyChanged();
                 }
             }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "") {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));  
         }
     }
 }

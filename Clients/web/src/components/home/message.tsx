@@ -5,6 +5,9 @@ import { ChatMessage } from "../../types/chatTypes/chatModels";
 import Markdown from "react-markdown";
 import type { Components } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
 import "highlight.js/styles/atom-one-dark.min.css";
 import CodeCopyButton from "./codeCopyButton";
 
@@ -50,7 +53,7 @@ const BotMessageBubble = ({ content }: { content: string }) => {
           <p className="text-xs text-gray-400">MeLLama</p>
         </div>
         <div className="leading-relaxed pr-4 pb-3 rounded-2xl text-white bot-reply">
-          <Markdown rehypePlugins={[rehypeHighlight]} components={{ pre: CodeBlock }}>
+          <Markdown rehypePlugins={[rehypeHighlight]} remarkPlugins={[remarkGfm, remarkParse, remarkRehype]} components={{ pre: CodeBlock }}>
             {content}
           </Markdown>
         </div>

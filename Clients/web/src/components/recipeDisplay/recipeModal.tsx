@@ -9,7 +9,7 @@ interface Props {
 }
 const RecipeModal = ({ recipe, isOpen, onClose }: Props) => {
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen} onClose={onClose} className="max-w-4xl w-full">
       <RecipeDisplay recipe={recipe} openInDesktopButtonVisible />
     </Modal>
   );

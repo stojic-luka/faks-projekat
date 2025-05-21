@@ -1,15 +1,16 @@
-﻿using DesktopClient.src.ViewModels.Controls;
-using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Controls;
+﻿using AugmentedCooking.src.ViewModels.Controls;
 
-namespace DesktopClient.src.Views.Controls {
-    /// <summary>
-    /// Interaction logic for Sidebar.xaml
-    /// </summary>
-    public partial class Sidebar : UserControl {
-        public Sidebar() {
+namespace AugmentedCooking.src.Views.Controls {
+    public partial class Sidebar : ContentView {
+        private readonly SidebarViewModel _sidebarViewModel;
+
+        public Sidebar(SidebarViewModel sidebarViewModel) {
             InitializeComponent();
-            this.DataContext = App.ServiceProvider.GetRequiredService<SidebarViewModel>();
+
+            _sidebarViewModel = sidebarViewModel ?? throw new ArgumentNullException(nameof(sidebarViewModel));
+            this.BindingContext = _sidebarViewModel;
         }
+
+        public Sidebar() : this(App.Services.GetRequiredService<SidebarViewModel>()) { }
     }
 }

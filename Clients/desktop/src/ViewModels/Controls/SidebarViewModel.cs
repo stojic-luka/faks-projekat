@@ -1,15 +1,16 @@
-﻿using DesktopClient.src.Enums;
-using DesktopClient.src.Helpers;
-using Microsoft.Extensions.DependencyInjection;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using AugmentedCooking.src.Enums;
+using AugmentedCooking.src.Helpers;
 
-namespace DesktopClient.src.ViewModels.Controls {
-    public class SidebarViewModel {
+namespace AugmentedCooking.src.ViewModels.Controls {
+    public class SidebarViewModel : BaseViewModel {
         public ICommand ChangeTabCommand { get; }
 
         private readonly MainViewModel _mainViewModel;
-        public SidebarViewModel() {
-            _mainViewModel = App.ServiceProvider.GetRequiredService<MainViewModel>();
+
+        public SidebarViewModel(MainViewModel mainViewModel) {
+            _mainViewModel = mainViewModel ?? throw new ArgumentNullException(nameof(mainViewModel));
+
             ChangeTabCommand = new RelayCommand(
                 tab => _mainViewModel.CurrentTab = (MainTabs) tab,
                 tab => tab is MainTabs

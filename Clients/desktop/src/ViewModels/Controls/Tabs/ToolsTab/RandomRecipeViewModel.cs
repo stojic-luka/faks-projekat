@@ -1,13 +1,10 @@
-﻿using AugmentedCooking.src.Models;
-using DesktopClient.src.Helpers;
-using DesktopClient.src.Services;
-using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using AugmentedCooking.src.Helpers;
+using AugmentedCooking.src.Models;
+using AugmentedCooking.src.Services;
 
-namespace DesktopClient.src.ViewModels.Controls.Tabs.ToolsTab {
-    class RandomRecipeViewModel : INotifyPropertyChanged {
+namespace AugmentedCooking.src.ViewModels.Controls.Tabs.ToolsTab {
+    public class RandomRecipeViewModel : BaseViewModel {
         private Recipe? _recipe;
         public Recipe Recipe {
             get => _recipe!;
@@ -20,8 +17,9 @@ namespace DesktopClient.src.ViewModels.Controls.Tabs.ToolsTab {
         public ICommand FetchRandomRecipe { get; }
 
         private readonly RecipeService _recipeService;
-        public RandomRecipeViewModel() {
-            _recipeService = App.ServiceProvider.GetRequiredService<RecipeService>();
+
+        public RandomRecipeViewModel(RecipeService recipeService) {
+            _recipeService = recipeService ?? throw new ArgumentNullException(nameof(recipeService));
 
             FetchRandomRecipe = new RelayCommand(
                 async obj => await Task.Run(() => FetchRecipeAsync()),
@@ -31,13 +29,8 @@ namespace DesktopClient.src.ViewModels.Controls.Tabs.ToolsTab {
 
         private async void FetchRecipeAsync() {
             Recipe? recipeResponse = await _recipeService.GetRandomRecipeAsync();
-            if (recipeResponse != null) 
+            if (recipeResponse != null)
                 Recipe = recipeResponse;
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "") {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

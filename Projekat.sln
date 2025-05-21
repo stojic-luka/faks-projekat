@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{9123F88B-E531-3118-42D7-ED8CEF4BD00E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AugmentedCooking", "Clients\desktop\AugmentedCooking.csproj", "{AEAB5ED2-A871-6177-6A09-FF60D5D429DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AEAB5ED2-A871-6177-6A09-FF60D5D429DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEAB5ED2-A871-6177-6A09-FF60D5D429DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEAB5ED2-A871-6177-6A09-FF60D5D429DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEAB5ED2-A871-6177-6A09-FF60D5D429DA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AEAB5ED2-A871-6177-6A09-FF60D5D429DA} = {9123F88B-E531-3118-42D7-ED8CEF4BD00E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0F8CF8E-E130-4FD5-AEE5-18356C68E1A4}
+	EndGlobalSection
+EndGlobal

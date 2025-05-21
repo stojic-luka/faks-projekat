@@ -13,7 +13,7 @@ export interface IndexedDBConfig {
   }[];
 }
 
-export function useIndexedDB<T>(config: IndexedDBConfig) {
+function useIndexedDB<T>(config: IndexedDBConfig) {
   const dbRef = useRef<IDBDatabase | null>(null);
 
   const getDB = useCallback(async (): Promise<IDBDatabase> => {
@@ -168,3 +168,5 @@ export function useIndexedDB<T>(config: IndexedDBConfig) {
     deleteAllItems,
   };
 }
+
+export default useIndexedDB;

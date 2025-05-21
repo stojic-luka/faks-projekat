@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.augmentedcooking.Containts.Constants;
 import com.augmentedcooking.Enums.Response.MessageRoles;
 import com.augmentedcooking.Enums.Response.ResponseTypes;
 
@@ -20,7 +21,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "messages")
+@Document(collection = Constants.DB.Collections.USER_MESSAGES)
 public class ChatMessage {
 
     @Id
@@ -51,7 +52,7 @@ public class ChatMessage {
     public static class MessageContent {
 
         private String text;
-        private List<ChatImage> images;
+        private List<MessageContent.ChatImage> images;
 
         @Getter
         @Setter
@@ -61,9 +62,18 @@ public class ChatMessage {
         public static class ChatImage {
             private byte[] data;
             private String format;
-            private int width;
-            private int height;
             private String description;
+            private MessageContent.ChatImage.Metadata metadata;
+
+            @Getter
+            @Setter
+            @ToString
+            @AllArgsConstructor
+            @NoArgsConstructor
+            public static class Metadata {
+                private int height;
+                private int width;
+            }
         }
     }
 }

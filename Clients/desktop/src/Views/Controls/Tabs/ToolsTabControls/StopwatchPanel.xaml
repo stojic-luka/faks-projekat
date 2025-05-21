@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="AugmentedCooking.src.Views.Controls.Tabs.ToolsTabControls.StopwatchPanel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converter="clr-namespace:AugmentedCooking.src.Converters.Controls.Tabs.ToolsTab"
+    xmlns:local="clr-namespace:AugmentedCooking.src.Views.Controls.Tabs.ToolsTabControls">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converter:IsRunningButtonStringConverter
+                x:Key="IsRunningToButtonStringConverter"/>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <VerticalStackLayout
+        Spacing="10"
+        Padding="10"
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
+
+        <local:Clock
+            WidthRequest="150"
+            HeightRequest="150"/>
+
+        <Label
+            Text="{Binding DisplayTime}"
+            FontSize="25"
+            HorizontalOptions="Center"
+            Margin="5"/>
+
+        <HorizontalStackLayout
+            Spacing="10"
+            HorizontalOptions="Center">
+
+            <Button
+                WidthRequest="50"
+                Text="{Binding IsRunning,
+               Converter={StaticResource IsRunningToButtonStringConverter}}"
+                Command="{Binding StartStopStopwatch}"/>
+
+            <Button
+                WidthRequest="50"
+                Text="Reset"
+                Command="{Binding ResetStopwatch}"/>
+
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentView>

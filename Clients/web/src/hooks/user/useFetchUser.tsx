@@ -12,7 +12,12 @@ export const useFetchUser = () => {
   >({
     queryKey: ["fetch-user"],
     queryFn: fetchUser,
-    select: (data) => data.data,
+    // select: (data) => data.data,
+    select: (data) => {
+      const user = data.data;
+      user.roles.push("admin");
+      return user;
+    },
     staleTime: Infinity,
   });
 };

@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "../../contexts/useAuth";
 
 const NAVBAR_BUTTON_WIDTH = 64; // in px
 const NAVBAR_BUTTON_GAP = 20; // in px
 
 const Navbar = () => {
+  const { isAdmin } = useAuth();
+  const { pathname } = useLocation();
   const mainNavbarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,8 +39,17 @@ const Navbar = () => {
                   Tools
                 </NavLink>
               </li>
+              {isAdmin && (
+                <li className="flex h-6 w-[var(--nav-button-width)]">
+                  <NavLink to="/admin" className="m-auto" draggable="false">
+                    Admin
+                  </NavLink>
+                </li>
+              )}
             </ul>
-            <div className="navbar-follow-line absolute bottom-0 h-6 w-[var(--nav-button-width)] bg-blue-600 transition-[left] rounded-lg ease-in-out duration-200" />
+            {pathname !== "/404" && (
+              <div className="navbar-follow-line absolute bottom-0 h-6 w-[var(--nav-button-width)] bg-blue-600 hover:bg-blue-700 transition-[left] rounded-lg ease-in-out duration-200" />
+            )}
           </nav>
         </div>
       </div>

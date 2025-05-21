@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AugmentedCooking.src.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:AugmentedCooking.src.Views.Controls"
+    xmlns:tabs="clr-namespace:AugmentedCooking.src.Views.Controls.Tabs"
+    xmlns:converters="clr-namespace:AugmentedCooking.src.Converters.Controls.Tabs"
+    Shell.FlyoutBehavior="Disabled"
+    Title="AugmentedCooking">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:TabIndexConverter x:Key="TabToIndexConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="200,*">
+        <controls:Sidebar Grid.Column="0"/>
+
+        <Grid Grid.Column="1">
+            <!-- HomeTab (index 0) -->
+            <ScrollView IsVisible="False">
+                <ScrollView.Triggers>
+                    <DataTrigger
+                        TargetType="ScrollView"
+                        Binding="{Binding CurrentTab,
+                              Converter={StaticResource TabToIndexConverter}}"
+                        Value="0">
+                        <Setter Property="IsVisible"
+                                Value="True"/>
+                    </DataTrigger>
+                </ScrollView.Triggers>
+                <tabs:HomeTab/>
+            </ScrollView>
+
+            <!-- SearchTab (index 1) -->
+            <ScrollView IsVisible="False">
+                <ScrollView.Triggers>
+                    <DataTrigger
+                        TargetType="ScrollView"
+                        Binding="{Binding CurrentTab,
+                              Converter={StaticResource TabToIndexConverter}}"
+                        Value="1">
+                        <Setter Property="IsVisible"
+                                Value="True"/>
+                    </DataTrigger>
+                </ScrollView.Triggers>
+                <tabs:SearchTab/>
+            </ScrollView>
+
+            <!-- ToolsTab (index 2) -->
+            <ScrollView IsVisible="False">
+                <ScrollView.Triggers>
+                    <DataTrigger
+                        TargetType="ScrollView"
+                        Binding="{Binding CurrentTab,
+                              Converter={StaticResource TabToIndexConverter}}"
+                        Value="2">
+                        <Setter Property="IsVisible"
+                                Value="True"/>
+                    </DataTrigger>
+                </ScrollView.Triggers>
+                <tabs:ToolsTab/>
+            </ScrollView>
+
+            <!-- SubmitTab (index 3) -->
+            <ScrollView IsVisible="False">
+                <ScrollView.Triggers>
+                    <DataTrigger
+                        TargetType="ScrollView"
+                        Binding="{Binding CurrentTab,
+                              Converter={StaticResource TabToIndexConverter}}"
+                        Value="3">
+                        <Setter Property="IsVisible"
+                                Value="True"/>
+                    </DataTrigger>
+                </ScrollView.Triggers>
+                <tabs:SubmitTab/>
+            </ScrollView>
+
+            <!-- LoginTab (index 4) -->
+            <ScrollView IsVisible="False">
+                <ScrollView.Triggers>
+                    <DataTrigger
+                        TargetType="ScrollView"
+                        Binding="{Binding CurrentTab,
+                              Converter={StaticResource TabToIndexConverter}}"
+                        Value="4">
+                        <Setter Property="IsVisible"
+                                Value="True"/>
+                    </DataTrigger>
+                </ScrollView.Triggers>
+                <tabs:HomeTab/>
+            </ScrollView>
+        </Grid>
+    </Grid>
+</ContentPage>

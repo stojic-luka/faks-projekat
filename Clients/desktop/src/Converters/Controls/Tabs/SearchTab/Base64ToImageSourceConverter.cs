@@ -1,28 +1,24 @@
 ﻿using System.Globalization;
-using System.Windows.Data;
-using System.Windows.Media.Imaging;
 
-namespace DesktopClient.src.Converters.Controls.Tabs.SearchTab {
+namespace AugmentedCooking.src.Converters.Controls.Tabs.SearchTab {
     class Base64ToImageSourceConverter : IValueConverter {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo c) {
             if (value == null || value.ToString() == string.Empty)
                 return null;
 
             try {
-                byte[] imageBytes = System.Convert.FromBase64String((string)value);
-                var image = new BitmapImage();
-                using (var stream = new System.IO.MemoryStream(imageBytes)) {
-                    image.BeginInit();
-                    image.StreamSource = stream;
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.EndInit();
-                }
+                byte[] imageBytes = System.Convert.FromBase64String((string) value);
+                var image = new Image {
+                    Source = ImageSource.FromStream(() => new MemoryStream(imageBytes)),
+                };
                 return image;
-            } catch {
+            }
+            catch {
                 return null;
             }
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo c) {
             throw new NotImplementedException();
         }
     }

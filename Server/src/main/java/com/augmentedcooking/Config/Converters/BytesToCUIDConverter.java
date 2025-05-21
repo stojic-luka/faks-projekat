@@ -14,8 +14,6 @@ public class BytesToCUIDConverter implements Converter<Binary, CUID> {
 
     @Override
     public CUID convert(@NonNull Binary source) {
-        return CUID.fromString(
-                CUIDConverter.bytesToCuidString(
-                        source.getData()));
+        return CUID.fromString(CUIDConverter.bytesToCuidString(source.getData()));
     }
 }

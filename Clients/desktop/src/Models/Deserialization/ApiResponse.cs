@@ -1,4 +1,4 @@
-﻿namespace DesktopClient.src.Models.Deserialization {
+﻿namespace AugmentedCooking.src.Models.Deserialization {
     public class ApiResponse<T> {
         public bool Success { get; set; }
         public MetaData? Meta { get; set; }
