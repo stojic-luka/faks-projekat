@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { useRecipeSubmit } from "../../../hooks/recipe/useRecipeSubmit";
-import { RecipeForm, RecipeInput } from "../../../types/recipesTypes";
-import { useSearchParams } from "react-router-dom";
-import { useRecipeUpdate } from "../../../hooks/recipe/useRecipeUpdate";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRecipeSubmit } from "../../hooks/recipe/useRecipeSubmit";
+import { Recipe, RecipeForm, RecipeInput } from "../../types/recipesTypes";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { useRecipeUpdate } from "../../hooks/recipe/useRecipeUpdate";
 
 export const SubmitRecipe: React.FC = () => {
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id") || undefined;
   const isEdit = !!id;
@@ -20,7 +21,19 @@ export const SubmitRecipe: React.FC = () => {
   const updateMutation = useRecipeUpdate();
   const { isPending, isError, error } = isEdit ? updateMutation : submitMutation;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (id && location.state) {
+      const selectedRecipe = location.state as Recipe;
+      setFormData({
+        title: selectedRecipe.title,
+        ingredients: selectedRecipe.ingredients.join(", "),
+        instructions: selectedRecipe.instructions,
+        image: selectedRecipe.image,
+      });
+    }
+  }, [id, location.state]);
+
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
 
     setImageUploading(true);
@@ -50,7 +63,7 @@ export const SubmitRecipe: React.FC = () => {
       console.error("Failed to read file");
       setImageUploading(false);
     };
-  };
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

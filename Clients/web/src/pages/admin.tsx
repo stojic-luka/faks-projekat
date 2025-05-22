@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { DeleteRecipe, SubmitRecipe } from "../components/tools";
+import { SubmitRecipe } from "../components/admin";
 
 const Admin = () => {
   return (
@@ -13,7 +13,6 @@ const Admin = () => {
       >
         <div className="flex flex-col lg:flex-row lg:gap-4">
           <SubmitRecipe />
-          <DeleteRecipe />
         </div>
       </motion.div>
     </div>
