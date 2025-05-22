@@ -22,6 +22,7 @@ import io.github.thibaultmeyer.cuid.CUID;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,9 +73,11 @@ public class RecipeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int limit,
             UsernamePasswordAuthenticationToken authentication) {
-        List<Recipe> recipes = recipeService.getUserFavoriteRecipes(authentication.getName(), page, limit);
+        if (page < 0 || limit <= 0)
+            throw new BadRequestException("Invalid pagination parameters: page must be >= 0 and limit must be > 0.");
 
-        List<RecipeResponseBody> responseBody = recipes.stream()
+        List<RecipeResponseBody> responseBody = recipeService
+                .getUserFavoriteRecipes(authentication.getName(), page, limit).stream()
                 .map(r -> new RecipeResponseBody(r))
                 .collect(Collectors.toList());
 
@@ -89,6 +92,17 @@ public class RecipeController {
             throw (BaseResponseException) new BadRequestException();
 
         Recipe recipe = recipeService.addRecipe(body);
+        return ResponseWrapper.success(new RecipeResponseBody(recipe));
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateRecipe(
+            @RequestParam String id,
+            @RequestBody Recipe body) {
+        if (!CUID.isValid(id) || body == null)
+            throw (BaseResponseException) new BadRequestException();
+
+        Recipe recipe = recipeService.updateRecipe(id, body);
         return ResponseWrapper.success(new RecipeResponseBody(recipe));
     }
 

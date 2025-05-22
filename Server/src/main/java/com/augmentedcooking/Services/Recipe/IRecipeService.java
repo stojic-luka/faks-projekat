@@ -17,5 +17,7 @@ public interface IRecipeService {
 
     Recipe addRecipe(Recipe recipe);
 
+    Recipe updateRecipe(String recipeId, Recipe recipe);
+
     Recipe deleteRecipe(String recipeId);
 }

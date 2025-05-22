@@ -1,2 +1,2 @@
 export { RandomRecipe } from "./randomRecipe";
-export { SubmitRecipe } from "./submitRecipe";
+export { SubmitRecipe, DeleteRecipe } from "./admin";

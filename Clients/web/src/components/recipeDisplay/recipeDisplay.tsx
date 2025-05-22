@@ -1,12 +1,17 @@
 import { useCallback } from "react";
 import { Recipe } from "../../types/recipesTypes";
 import { SmallestImage } from "../../util";
+import { useAuth } from "../../contexts/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   recipe: Recipe | undefined;
   openInDesktopButtonVisible?: boolean;
 }
 const RecipeDisplay = ({ recipe, openInDesktopButtonVisible = false }: Props) => {
+  const { isAdmin } = useAuth();
+  const navigate = useNavigate();
+
   const handleOpenDesktopApp = useCallback(() => {
     if (recipe?.id) {
       window.open(`augmentedcooking://recipe/${recipe.id}`);
@@ -15,18 +20,36 @@ const RecipeDisplay = ({ recipe, openInDesktopButtonVisible = false }: Props) =>
     }
   }, [recipe?.id]);
 
+  const handleEditRecipe = useCallback(() => {
+    if (recipe?.id) {
+      navigate(`/admin?id=${recipe.id}`);
+    } else {
+      alert("An error occurred while editing the recipe.");
+    }
+  }, [navigate, recipe?.id]);
+
   return (
     <div className="p-4 shadow-md rounded-lg border dark:border-neutral-700 bg-[#f4f4f4] dark:bg-[#292929] focus:outline-none">
       <div className="flex justify-between mb-4">
         <h1 className="text-xl h-auto my-auto font-bold text-gray-800 dark:text-white">{recipe?.title || "Recipe Title"}</h1>
-        {openInDesktopButtonVisible && (
-          <button
-            className="bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 transition-colors duration-200 mt-4 md:mt-0 text-sm whitespace-nowrap"
-            onClick={handleOpenDesktopApp}
-          >
-            Open in desktop app
-          </button>
-        )}
+        <div className="flex gap-2">
+          {isAdmin && (
+            <button
+              className="bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 transition-colors duration-200 mt-4 md:mt-0 text-sm whitespace-nowrap"
+              onClick={handleEditRecipe}
+            >
+              Edit recipe
+            </button>
+          )}
+          {openInDesktopButtonVisible && (
+            <button
+              className="bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 transition-colors duration-200 mt-4 md:mt-0 text-sm whitespace-nowrap"
+              onClick={handleOpenDesktopApp}
+            >
+              Open in desktop app
+            </button>
+          )}
+        </div>
       </div>
       <div className="flex flex-col md:flex-row gap-4">
         <div className="md:w-1/2 h-64 overflow-y-auto scrollbar-redesign dark:scrollbar-redesign-dark p-4 bg-white dark:bg-[#212121] rounded-lg border dark:border-neutral-700">

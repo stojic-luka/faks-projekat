@@ -25,19 +25,17 @@ export const getRandomRecipe = async (): Promise<ApiResponseData<Recipe>> => {
 };
 
 export const getRecipesByIngredients = async (filters: RecipeFilterArguments): Promise<ApiResponseData<Recipe[]>> => {
-  const response = await authenticatedAxios.post<ApiResponse<Recipe[]>>(
-    "/api/v1/recipe",
-    { ingredients: filters.ingredients },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      params: {
-        limit: filters.limit,
-        page: filters.page,
-      },
-    }
-  );
+  const response = await authenticatedAxios.get<ApiResponse<Recipe[]>>("/api/v1/recipe", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    params: {
+      ingredients: filters.ingredients,
+      limit: filters.limit,
+      page: filters.page,
+    },
+    paramsSerializer: { indexes: null },
+  });
 
   return response.data as ApiResponseData<Recipe[]>;
 };
@@ -66,10 +64,26 @@ export const submitRecipe = async (recipe: RecipeInput): Promise<ApiResponseData
   return response.data as ApiResponseData<Recipe>;
 };
 
-export const deleteRecipe = async (recipeId: string): Promise<ApiResponseData<Recipe>> => {
-  const response = await authenticatedAxios.delete<ApiResponse<Recipe>>(`/api/v1/recipe/${recipeId}`, {
+export const updateRecipe = async ({ recipeId, recipe }: { recipeId: string; recipe: RecipeInput }): Promise<ApiResponseData<Recipe>> => {
+  const response = await authenticatedAxios.put<ApiResponse<Recipe>>("/api/v1/recipe", recipe, {
     headers: {
       "Content-Type": "application/json",
+    },
+    params: {
+      id: recipeId,
+    },
+  });
+
+  return response.data as ApiResponseData<Recipe>;
+};
+
+export const deleteRecipe = async (recipeId: string): Promise<ApiResponseData<Recipe>> => {
+  const response = await authenticatedAxios.delete<ApiResponse<Recipe>>(`/api/v1/recipe`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    params: {
+      id: recipeId,
     },
   });
 

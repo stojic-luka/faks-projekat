@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import { useRecipeSubmit } from "../../hooks/recipe/useRecipeSubmit";
-import { RecipeForm } from "../../types/recipesTypes";
+import { useRecipeSubmit } from "../../../hooks/recipe/useRecipeSubmit";
+import { RecipeForm, RecipeInput } from "../../../types/recipesTypes";
+import { useSearchParams } from "react-router-dom";
+import { useRecipeUpdate } from "../../../hooks/recipe/useRecipeUpdate";
 
 export const SubmitRecipe: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id") || undefined;
+  const isEdit = !!id;
+
   const [imageUploading, setImageUploading] = useState(false);
   const [formData, setFormData] = useState<RecipeForm>({
     title: "",
@@ -10,9 +16,10 @@ export const SubmitRecipe: React.FC = () => {
     instructions: "",
   });
 
-  const { mutate, isPending, isError, error } = useRecipeSubmit();
+  const submitMutation = useRecipeSubmit();
+  const updateMutation = useRecipeUpdate();
+  const { isPending, isError, error } = isEdit ? updateMutation : submitMutation;
 
-  // TODO?: cover all setImageUploading cases
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
 
@@ -52,16 +59,26 @@ export const SubmitRecipe: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate({
+
+    const reqBase: RecipeInput = {
       title: formData.title,
       ingredients: formData.ingredients.split(",").map((ingredient) => ingredient.trim()),
       instructions: formData.instructions,
       ...(formData.image && { image: formData.image }),
-    });
+    };
+
+    if (isEdit) {
+      updateMutation.mutate({
+        recipeId: id!,
+        recipe: reqBase,
+      });
+    } else {
+      submitMutation.mutate(reqBase);
+    }
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 border dark:border-neutral-700 bg-[#f4f4f4] dark:bg-[#292929] text-gray-200 rounded-lg shadow-md">
+    <div className="max-w-2xl mt-6 w-full mx-auto p-6 border dark:border-neutral-700 bg-[#f4f4f4] dark:bg-[#292929] text-gray-200 rounded-lg shadow-md">
       <h1 className="text-2xl font-bold mb-4">Submit a Recipe</h1>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>

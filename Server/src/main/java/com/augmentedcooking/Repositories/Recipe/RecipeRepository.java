@@ -92,8 +92,17 @@ public class RecipeRepository implements IRecipeRepository {
             throw new IllegalArgumentException("Recipe must not be null!");
 
         recipe.setId(CUID.randomCUID2());
-
         return mongoTemplate.insert(recipe);
+    }
+
+    @Override
+    public Recipe updateRecipe(String recipeId, Recipe recipe) {
+        if (recipe == null)
+            throw new IllegalArgumentException("Recipe must not be null!");
+
+        Query query = Query.query(Criteria.where("id").is(recipeId));
+        recipe.setId(CUID.fromString(recipeId));
+        return mongoTemplate.findAndReplace(query, recipe);
     }
 
     @Override

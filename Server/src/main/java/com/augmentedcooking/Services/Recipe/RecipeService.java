@@ -44,6 +44,11 @@ public class RecipeService implements IRecipeService {
     }
 
     @Override
+    public Recipe updateRecipe(String recipeId, Recipe recipe) {
+        return recipeRepository.updateRecipe(recipeId, recipe);
+    }
+
+    @Override
     public Recipe deleteRecipe(String recipeId) {
         return recipeRepository.deleteRecipe(recipeId);
     }
