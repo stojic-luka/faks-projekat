@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.augmentedcooking.Containts.Constants;
+import com.augmentedcooking.Constants.Constants;
 import com.augmentedcooking.Exceptions.BaseResponseException;
 import com.augmentedcooking.Exceptions.Auth.OAuth2Exception;
 import com.augmentedcooking.Exceptions.Http.BadRequestException;
@@ -57,6 +57,8 @@ public class AuthController {
             @RequestBody AuthRequestBody body,
             HttpServletResponse response) {
         try {
+            System.out.println("Login request received: " + body);
+
             if (body == null || (body.getUsername() == null && body.getEmail() == null) || body.getPassword() == null)
                 throw (BaseResponseException) new BadRequestException();
 

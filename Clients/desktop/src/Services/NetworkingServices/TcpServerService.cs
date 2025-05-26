@@ -2,9 +2,9 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using AugmentedCooking.src.Models;
+using AugmentedCooking.src.Models.Recipe;
 
-namespace AugmentedCooking.src.Services {
+namespace AugmentedCooking.src.Services.NetworkingServices {
     public class TcpServerService(int port) {
         private readonly TcpListener _server = new(IPAddress.Any, port);
         private bool IsRunning;

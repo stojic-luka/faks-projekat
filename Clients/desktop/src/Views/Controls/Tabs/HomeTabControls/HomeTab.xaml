@@ -2,12 +2,15 @@
     x:Class="AugmentedCooking.src.Views.Controls.Tabs.HomeTab"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:AugmentedCooking.src.Views.Controls.Tabs"
     Background="#171717">
     <Grid>
-        <Label
+        <!-- <Label
             Text="Welcome to the Home Tab"
             FontSize="20"
             HorizontalOptions="Center"
-            VerticalOptions="Center"/>
+            VerticalOptions="Center"/> -->
+
+        <local:ChatPage Grid.Column="0"/>
     </Grid>
 </ContentView>

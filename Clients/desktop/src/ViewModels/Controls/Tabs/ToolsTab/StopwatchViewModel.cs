@@ -2,13 +2,14 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AugmentedCooking.src.Helpers;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace AugmentedCooking.src.ViewModels.Controls.Tabs.ToolsTab {
-    public class StopwatchViewModel : BaseViewModel {
+    public partial class StopwatchViewModel : ObservableObject {
         private readonly System.Timers.Timer _timer;
-        private int _timeSeconds;
-        private bool _isRunning;
 
+        private int _timeSeconds;
         public int TimeSeconds {
             get { return _timeSeconds; }
             set {
@@ -24,23 +25,16 @@ namespace AugmentedCooking.src.ViewModels.Controls.Tabs.ToolsTab {
             }
         }
 
-        public bool IsRunning {
-            get { return _isRunning; }
-            private set {
-                if (_isRunning != value) {
-                    _isRunning = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        [ObservableProperty]
+        private bool _isRunning;
 
-        public double HourAngle => (TimeSeconds / 3600) % 12 * 30;
-        public double MinuteAngle => (TimeSeconds / 60) % 60 * 6;
+        public double HourAngle => TimeSeconds / 3600 % 12 * 30;
+        public double MinuteAngle => TimeSeconds / 60 % 60 * 6;
         public double SecondAngle => TimeSeconds % 60 * 6;
         public string DisplayTime {
             get {
                 int hours = TimeSeconds / 3600;
-                int minutes = (TimeSeconds % 3600) / 60;
+                int minutes = TimeSeconds % 3600 / 60;
                 int seconds = TimeSeconds % 60;
 
                 if (hours > 0)
@@ -58,7 +52,7 @@ namespace AugmentedCooking.src.ViewModels.Controls.Tabs.ToolsTab {
             _timer.Elapsed += (sender, e) => TimeSeconds += 1;
 
             StartStopStopwatch = new RelayCommand(
-                obj => {
+                () => {
                     if (!IsRunning) {
                         _timer.Start();
                         IsRunning = true;
@@ -67,35 +61,30 @@ namespace AugmentedCooking.src.ViewModels.Controls.Tabs.ToolsTab {
                         _timer.Stop();
                         IsRunning = false;
                     }
-                },
-                obj => true
+                }
             );
             ResetStopwatch = new RelayCommand(
-                obj => {
+                () => {
                     _timer.Stop();
                     IsRunning = false;
                     TimeSeconds = 0;
-                },
-                obj => true
+                }
             );
         }
 
         public void Start() {
             _timer.Start();
             IsRunning = true;
-            System.Diagnostics.Trace.WriteLine("Start");
         }
 
         public void Stop() {
             _timer.Stop();
             IsRunning = false;
-            System.Diagnostics.Trace.WriteLine("Stop");
         }
 
         public void Reset() {
             _timer.Stop();
             TimeSeconds = 0;
-            System.Diagnostics.Trace.WriteLine("Reset");
         }
     }
 }

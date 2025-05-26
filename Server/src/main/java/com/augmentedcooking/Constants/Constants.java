@@ -1,4 +1,4 @@
-package com.augmentedcooking.Containts;
+package com.augmentedcooking.Constants;
 
 import lombok.NoArgsConstructor;
 import lombok.AccessLevel;

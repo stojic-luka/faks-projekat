@@ -1,15 +1,17 @@
 ﻿using System.Windows.Input;
 using AugmentedCooking.src.Helpers;
-using AugmentedCooking.src.Models;
-using AugmentedCooking.src.Services;
+using AugmentedCooking.src.Models.Recipe;
+using AugmentedCooking.src.Services.NetworkingServices;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace AugmentedCooking.src.ViewModels.Windows {
-    internal class RecipeDetailsViewModel : BaseViewModel {
+    internal partial class RecipeDetailsViewModel : ObservableObject {
         public Recipe Recipe { get; }
         public string Title { get; }
         public string Ingredients { get; }
         public string Instructions { get; }
-        public Image Image { get; }
+        public Image? Image { get; }
 
         public ICommand SyncWithGlassesCommand { get; }
 
@@ -20,14 +22,16 @@ namespace AugmentedCooking.src.ViewModels.Windows {
             Ingredients = string.Join(";\n", recipe.Ingredients);
             Instructions = recipe.Instructions;
 
-            byte[] imageBytes = Convert.FromBase64String((string) recipe.Image);
-            Image = new Image {
-                Source = ImageSource.FromStream(() => new MemoryStream(imageBytes)),
-            };
+            if (recipe.Image != null && string.IsNullOrEmpty(recipe.Image.Data)) {
+                byte[] imageBytes = Convert.FromBase64String(recipe.Image.Data);
+                Image = new Image {
+                    Source = ImageSource.FromStream(() => new MemoryStream(imageBytes)),
+                };
+            }
 
-            SyncWithGlassesCommand = new RelayCommand(
-                SyncWithGlasses,
-                obj => obj != null && obj is Recipe
+            SyncWithGlassesCommand = new RelayCommand<Recipe>(
+                obj => SyncWithGlasses(obj!),
+                obj => obj != null
             );
         }
 

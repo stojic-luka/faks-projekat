@@ -1,10 +1,10 @@
-using System.Collections.Concurrent;
 using AugmentedCooking.src.Config;
 using AugmentedCooking.src.Helpers;
-using AugmentedCooking.src.Repositories;
+using AugmentedCooking.src.Models.Response.Auth;
+using AugmentedCooking.src.Repositories.TokenStorageRepositories;
 using AugmentedCooking.src.Utils;
 
-namespace AugmentedCooking.src.Services;
+namespace AugmentedCooking.src.Services.AuthServices;
 
 public interface IAuthService {
     Task<(Uri AuthorizeUrl, string State)> GetAuthorizeUrlAsync();
@@ -28,7 +28,7 @@ public class AuthService(ISecureTokenStorage storage, IStateStore store) : IAuth
         var codeChallenge = AuthUtils.ComputeSha512Base64Url(codeVerifier);
 
         var qs = new Dictionary<string, string> {
-            ["redirect_uri"] = AuthConfig.RedirectUri,
+            ["redirect_uri"] = AuthConfig.BaseRedirectUri,
             ["state"] = state,
             ["code_challenge"] = codeChallenge,
             ["code_challenge_method"] = AuthConfig.CodeChallengeMethod

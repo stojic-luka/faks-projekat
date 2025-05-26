@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace AugmentedCooking.src.Helpers;
 
-public class BaseViewModel : INotifyPropertyChanged {
+public partial class BaseViewModel : INotifyPropertyChanged {
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) {

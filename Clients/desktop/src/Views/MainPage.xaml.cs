@@ -20,6 +20,6 @@ public partial class MainPage : ContentPage {
     //     {
     //         if (window != this)
     //             window.Close();
-    //     }
+    //     }w
     // }
 }

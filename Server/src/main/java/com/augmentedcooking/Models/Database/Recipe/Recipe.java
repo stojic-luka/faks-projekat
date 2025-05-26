@@ -4,7 +4,7 @@ import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.augmentedcooking.Containts.Constants;
+import com.augmentedcooking.Constants.Constants;
 
 import io.github.thibaultmeyer.cuid.CUID;
 import lombok.AllArgsConstructor;

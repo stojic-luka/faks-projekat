@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="AugmentedCooking.src.Views.Controls.Tabs.LoginTab"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:AugmentedCooking.src.ViewModels.Controls.Tabs.LoginTab"
+    x:Name="Root"
+    BackgroundColor="#171717">
+
+    <VerticalStackLayout
+        Padding="20"
+        Spacing="15">
+
+        <Label
+            Text="Username"
+            FontSize="18"/>
+        <Entry
+            Text="{Binding Username, Mode=TwoWay}"
+            Placeholder="Enter username"
+            FontSize="16"/>
+
+        <Label
+            Text="Password"
+            FontSize="18"/>
+        <Entry
+            Text="{Binding Password, Mode=TwoWay}"
+            Placeholder="Enter password"
+            IsPassword="True"
+            ReturnType="Done"
+            FontSize="16">
+            <Entry.Behaviors>
+                <toolkit:EventToCommandBehavior
+                    EventName="Completed"
+                    Command="{Binding SignInCommand}"/>
+            </Entry.Behaviors>
+        </Entry>
+
+        <Button
+            Text="Login"
+            Command="{Binding SignInCommand}"
+            FontSize="16"/>
+
+        <Label
+            Text="Login failed"
+            TextColor="Red"
+            FontSize="14"
+            IsVisible="{Binding IsLoginFailed}"/>
+
+    </VerticalStackLayout>
+</ContentView>

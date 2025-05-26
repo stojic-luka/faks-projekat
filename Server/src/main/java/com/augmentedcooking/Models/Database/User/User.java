@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.augmentedcooking.Containts.Constants;
+import com.augmentedcooking.Constants.Constants;
 import com.augmentedcooking.Utils.impl.Passwords;
 
 import io.github.thibaultmeyer.cuid.CUID;

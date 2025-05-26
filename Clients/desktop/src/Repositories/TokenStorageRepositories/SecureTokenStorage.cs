@@ -1,4 +1,4 @@
-namespace AugmentedCooking.src.Repositories;
+namespace AugmentedCooking.src.Repositories.TokenStorageRepositories;
 
 public interface ISecureTokenStorage {
     Task<string?> GetAccessTokenAsync();

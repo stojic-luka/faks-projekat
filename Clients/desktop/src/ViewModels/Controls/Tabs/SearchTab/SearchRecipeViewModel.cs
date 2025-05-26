@@ -1,54 +1,53 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using AugmentedCooking.src.Helpers;
-using AugmentedCooking.src.Models;
-using AugmentedCooking.src.Services;
+using AugmentedCooking.src.Models.Recipe;
+using AugmentedCooking.src.Services.RecipeServices;
 using AugmentedCooking.src.ViewModels.Windows;
 using AugmentedCooking.src.Views.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace AugmentedCooking.src.ViewModels.Controls.Tabs.SearchTab {
-    public class SearchRecipeViewModel : BaseViewModel {
+    public partial class SearchRecipeViewModel : ObservableObject {
         private int _page = 0;
         private const byte PAGE_LIMIT = 20;
-        private bool _isLastFetch = false;
 
-        private ObservableCollection<string> _searchIngredients = [];
-        public ObservableCollection<string> SearchIngredients {
-            get => _searchIngredients;
-            set {
-                if (!_searchIngredients.SequenceEqual(value)) {
-                    _searchIngredients = value;
-                    _page = 0;
-                    _isLastFetch = false;
-                }
-            }
-        }
+        [ObservableProperty]
+        private string _searchText = string.Empty;
 
+        [ObservableProperty]
         private ObservableCollection<Recipe> _fetchedRecipes = [];
-        public ObservableCollection<Recipe> FetchedRecipes {
-            get => _fetchedRecipes;
-            private set {
-                _fetchedRecipes = value;
-                OnPropertyChanged();
-            }
-        }
 
-        public ICommand ItemClickCommand { get; }
+        public IRelayCommand<Recipe> SelectRecipeCommand { get; }
+        public IAsyncRelayCommand FetchRecipesCommand { get; }
 
-        private readonly RecipeService _recipeService;
+        private readonly IRecipeService _recipeService;
 
-        public SearchRecipeViewModel(RecipeService recipeService) {
+        public SearchRecipeViewModel(IRecipeService recipeService) {
             _recipeService = recipeService ?? throw new ArgumentNullException(nameof(recipeService));
 
-            ItemClickCommand = new RelayCommand(OnItemClick, obj => true);
+            SelectRecipeCommand = new RelayCommand<Recipe>(OnItemClick);
+
+            FetchRecipesCommand = new AsyncRelayCommand(
+                FetchRecipesAsync,
+                () => !_isFetching && !_isLastFetch && !string.IsNullOrWhiteSpace(SearchText)
+            );
         }
 
         private ContentPage? _currentWindow = null;
 
-        private void OnItemClick(object parameter) {
-            if (parameter is Recipe clickedItem) {
+        partial void OnSearchTextChanged(string value) {
+            if (!string.IsNullOrWhiteSpace(value)) {
+                _isFirstFetch = true;
+                _isLastFetch = false;
+            }
+            else {
+                _isFirstFetch = false;
+            }
+        }
+
+        private void OnItemClick(object? parameter) {
+            if (parameter != null && parameter is Recipe clickedItem) {
                 // _currentWindow?.close();
 
                 _currentWindow = new RecipeDetailsPage {
@@ -58,16 +57,15 @@ namespace AugmentedCooking.src.ViewModels.Controls.Tabs.SearchTab {
             }
         }
 
+        private bool _isFirstFetch = false;
         private bool _isFetching = false;
+        private bool _isLastFetch = false;
 
-        public async Task FetchRecipesAsync(bool isFirstFetch = false) {
-            if (_searchIngredients.Count == 0 || _isLastFetch || _isFetching)
-                return;
-
+        public async Task FetchRecipesAsync() {
             _isFetching = true;
 
             TaskCompletionSource<bool> clearingTask = new();
-            if (isFirstFetch) {
+            if (_isFirstFetch) {
                 _page = 0;
                 await MainThread.InvokeOnMainThreadAsync(() => {
                     FetchedRecipes.Clear();
@@ -78,9 +76,12 @@ namespace AugmentedCooking.src.ViewModels.Controls.Tabs.SearchTab {
                 clearingTask.SetResult(true);
 
             Recipe[]? recipes = await _recipeService.GetRecipeByIngredientsAsync(
-                [.. _searchIngredients],
                 _page,
-                PAGE_LIMIT
+                PAGE_LIMIT,
+                [.. SearchText.Split(',')
+                    .Select(i => i.Trim())
+                    .Where(i => !string.IsNullOrWhiteSpace(i))
+                ]
             );
 
             if (recipes?.Length == 0) {

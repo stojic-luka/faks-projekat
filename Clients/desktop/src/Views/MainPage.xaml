@@ -6,8 +6,7 @@
     xmlns:controls="clr-namespace:AugmentedCooking.src.Views.Controls"
     xmlns:tabs="clr-namespace:AugmentedCooking.src.Views.Controls.Tabs"
     xmlns:converters="clr-namespace:AugmentedCooking.src.Converters.Controls.Tabs"
-    Shell.FlyoutBehavior="Disabled"
-    Title="AugmentedCooking">
+    Shell.FlyoutBehavior="Disabled">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -91,7 +90,7 @@
                                 Value="True"/>
                     </DataTrigger>
                 </ScrollView.Triggers>
-                <tabs:HomeTab/>
+                <tabs:LoginTab/>
             </ScrollView>
         </Grid>
     </Grid>

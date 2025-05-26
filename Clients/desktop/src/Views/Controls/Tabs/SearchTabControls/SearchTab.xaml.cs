@@ -1,4 +1,4 @@
-﻿using AugmentedCooking.src.ViewModels.Controls.Tabs.SearchTab;
+using AugmentedCooking.src.ViewModels.Controls.Tabs.SearchTab;
 
 namespace AugmentedCooking.src.Views.Controls.Tabs {
     public partial class SearchTab : ContentView {

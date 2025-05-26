@@ -1,30 +1,23 @@
-﻿using AugmentedCooking.src.Services;
+﻿using System.Runtime.ExceptionServices;
+using AugmentedCooking.src.Services.AuthServices;
+using AugmentedCooking.src.Services.UserServices;
 using AugmentedCooking.src.Views;
 
 namespace AugmentedCooking;
 
 public partial class App : Application {
-    private readonly IAuthService _authService;
     public static IServiceProvider Services { get; private set; } = default!;
 
-    public App(IServiceProvider services, IAuthService authService) {
+    public App(IServiceProvider services) {
         InitializeComponent();
 
+        // AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
         Services = services ?? throw new ArgumentNullException(nameof(services));
-        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
 
-        MainPage = new ContentPage { };
-        InitializeAsync();
+        MainPage = new AppShell();
     }
 
-    async void InitializeAsync() {
-        try {
-            if (await _authService.IsLoggedInAsync()) {
-                MainPage = new NavigationPage(Services.GetRequiredService<MainPage>());
-                return;
-            }
-        }
-        catch { }
-        MainPage = new NavigationPage(Services.GetRequiredService<LoginPage>());
+    private void CurrentDomain_FirstChanceException(object sender, FirstChanceExceptionEventArgs e) {
+        System.Diagnostics.Debug.WriteLine($"***** Handling Unhandled Exception *****: {e.Exception.Message}");
     }
 }

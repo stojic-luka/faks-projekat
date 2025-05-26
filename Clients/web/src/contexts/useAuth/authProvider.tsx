@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { AuthContext } from "./authContext";
-import { User } from "../../types/userTypes";
+import { User, UserRoles } from "../../types/userTypes";
 import { AuthContextType } from "./types";
 import { useAuthHelpers } from "./useAuthHelpers";
 import { useFetchUser } from "../../hooks/user";
@@ -15,6 +15,8 @@ export const AuthProvider = ({ children }: Props) => {
   const queryClient = useQueryClient();
 
   const { data: userData, isError: isErrorUser, refetch: refetchUser } = useFetchUser();
+
+  console.log(user);
 
   const logout = useCallback(() => {
     localStorage.removeItem("token");
@@ -50,7 +52,7 @@ export const AuthProvider = ({ children }: Props) => {
     refresh,
     logout,
     isAuthenticated: !!user,
-    isAdmin: user ? user.roles.includes("admin") : false,
+    isAdmin: user ? user.roles.includes(UserRoles.ADMIN) : false,
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
