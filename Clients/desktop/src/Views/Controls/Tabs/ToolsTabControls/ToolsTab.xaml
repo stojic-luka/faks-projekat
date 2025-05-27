@@ -9,7 +9,7 @@
     <ScrollView>
         <Grid
             HorizontalOptions="Fill"
-            RowDefinitions="300,10,*"
+            RowDefinitions="400,10,*"
             ColumnDefinitions="200,10,*">
 
             <toolTabControls:StopwatchPanel
@@ -40,7 +40,7 @@
 
             <toolTabControls:FavoriteRecipesPanel
                 Grid.Row="2"
-                Grid.ColumnSpan="3"
+                Grid.ColumnSpan="4"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start"/>
 

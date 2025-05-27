@@ -7,6 +7,8 @@ namespace AugmentedCooking.src.Services.RecipeServices;
 public interface IRecipeService {
     Task<Recipe?> GetRandomRecipeAsync();
     Task<Recipe[]?> GetRecipeByIngredientsAsync(int page, byte limit, string[] ingredients);
+    Task<Recipe?> AddRecipeAsync(Recipe recipe);
+    Task<Recipe?> DeleteRecipeAsync(string recipeId);
 }
 
 public class RecipeService(IRecipeRepository recipeRepository) : IRecipeService {
@@ -34,6 +36,36 @@ public class RecipeService(IRecipeRepository recipeRepository) : IRecipeService 
 
             if (apiResponse.IsSuccess)
                 return [.. apiResponse.Data!];
+
+            return null;
+        }
+        catch (Exception ex) {
+            System.Diagnostics.Trace.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
+    public async Task<Recipe?> AddRecipeAsync(Recipe recipe) {
+        try {
+            var apiResponse = await _recipeRepository.AddRecipeAsync(recipe);
+
+            if (apiResponse.IsSuccess)
+                return apiResponse.Data!;
+
+            return null;
+        }
+        catch (Exception ex) {
+            System.Diagnostics.Trace.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
+    public async Task<Recipe?> DeleteRecipeAsync(string recipeId) {
+        try {
+            var apiResponse = await _recipeRepository.DeleteRecipeAsync(recipeId);
+
+            if (apiResponse.IsSuccess)
+                return apiResponse.Data!;
 
             return null;
         }

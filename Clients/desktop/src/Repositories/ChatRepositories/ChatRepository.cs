@@ -37,6 +37,7 @@ public class ChatRepository : IChatRepository {
                JsonSerializer.Serialize(new {
                    prompt,
                    imageb64,
+                   model = "llama3.2:3b",
                    streamed = true
                }),
                ct
@@ -52,6 +53,7 @@ public class ChatRepository : IChatRepository {
 
         while (!reader.EndOfStream && !ct.IsCancellationRequested) {
             int read = await reader.ReadAsync(buffer, ct);
+            System.Diagnostics.Debug.WriteLine(read, "Read should not return negative value");
             if (read <= 0) break;
 
             sb.Append(buffer, 0, read);
@@ -59,9 +61,9 @@ public class ChatRepository : IChatRepository {
             var parts = _jsonBoundary.Split(text);
 
             foreach (var part in parts) {
-                var chunk = JsonSerializer.Deserialize<AiChatStreamedResponse>(part, _jsonOptions);
-                if (chunk != null)
-                    yield return chunk;
+                var chunk = JsonSerializer.Deserialize<ApiResponse<AiChatStreamedResponse>>(part, _jsonOptions);
+                if (chunk != null && chunk.IsSuccess)
+                    yield return chunk.Data!;
             }
 
             sb.Clear();
@@ -70,9 +72,9 @@ public class ChatRepository : IChatRepository {
 
         var leftover = sb.ToString().Trim();
         if (!string.IsNullOrEmpty(leftover)) {
-            var chunk = JsonSerializer.Deserialize<AiChatStreamedResponse>(leftover, _jsonOptions);
-            if (chunk != null)
-                yield return chunk;
+            var chunk = JsonSerializer.Deserialize<ApiResponse<AiChatStreamedResponse>>(leftover, _jsonOptions);
+            if (chunk != null && chunk.IsSuccess)
+                yield return chunk.Data!;
         }
     }
 
@@ -82,12 +84,13 @@ public class ChatRepository : IChatRepository {
             JsonSerializer.Serialize(new {
                 prompt,
                 imageb64,
+                model = "llama3.2:3b",
                 streamed = false
             }),
             ct
         );
 
-        if (resp.IsSuccess)
+        if (resp != null && resp.IsSuccess)
             return resp.Data!;
 
         // TODO?: add logic for error handling

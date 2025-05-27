@@ -3,13 +3,98 @@
     x:Class="AugmentedCooking.src.Views.Controls.Tabs.SubmitTab"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Name="Root"
     BackgroundColor="#171717">
 
-    <Grid>
-        <Label
-            Text="About This App"
-            FontSize="20"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"/>
-    </Grid>
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <!-- dark‐mode Entry -->
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor"
+                        Value="#2C2C2E"/>
+                <Setter Property="TextColor"
+                        Value="White"/>
+                <Setter Property="PlaceholderColor"
+                        Value="LightGray"/>
+                <Setter Property="HeightRequest"
+                        Value="40"/>
+            </Style>
+            <!-- dark‐mode multi‐line Editor -->
+            <Style TargetType="Editor">
+                <Setter Property="BackgroundColor"
+                        Value="#2C2C2E"/>
+                <Setter Property="TextColor"
+                        Value="White"/>
+                <Setter Property="PlaceholderColor"
+                        Value="LightGray"/>
+                <Setter Property="HeightRequest"
+                        Value="100"/>
+            </Style>
+            <!-- transparent button with white text -->
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor"
+                        Value="Transparent"/>
+                <Setter Property="TextColor"
+                        Value="White"/>
+                <Setter Property="BorderColor"
+                        Value="White"/>
+                <Setter Property="BorderWidth"
+                        Value="1"/>
+                <Setter Property="CornerRadius"
+                        Value="4"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20"
+                             Spacing="15">
+
+            <!-- ADD RECIPE -->
+            <Label
+                Text="Add a New Recipe"
+                FontSize="20"
+                FontAttributes="Bold"
+                TextColor="White"/>
+
+            <Entry
+                Placeholder="Title"
+                Text="{Binding NewRecipeTitle}"/>
+
+            <Entry
+                Placeholder="Ingredients (comma-separated)"
+                Text="{Binding NewRecipeIngredients}"/>
+
+            <Editor
+                Placeholder="Instructions"
+                Text="{Binding NewRecipeInstructions}"/>
+
+            <Button
+                Text="Add Recipe"
+                Command="{Binding AddRecipeCommand}"
+                HorizontalOptions="Center"/>
+
+            <BoxView
+                HeightRequest="1"
+                Color="#444"
+                Margin="0,10"/>
+
+            <!-- DELETE RECIPE -->
+            <Label
+                Text="Delete a Recipe"
+                FontSize="20"
+                FontAttributes="Bold"
+                TextColor="White"/>
+
+            <Entry
+                Placeholder="Recipe ID"
+                Text="{Binding DeleteRecipeId}"/>
+
+            <Button
+                Text="Delete Recipe"
+                Command="{Binding DeleteRecipeCommand}"
+                HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentView>

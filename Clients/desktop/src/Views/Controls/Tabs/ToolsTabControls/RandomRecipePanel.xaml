@@ -3,12 +3,13 @@
     x:Class="AugmentedCooking.src.Views.Controls.Tabs.ToolsTabControls.RandomRecipePanel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converter="clr-namespace:AugmentedCooking.src.Converters.Controls.Tabs.ToolsTab">
+    xmlns:converter="clr-namespace:AugmentedCooking.src.Converters.Controls.Tabs.ToolsTab"
+    xmlns:converters="clr-namespace:AugmentedCooking.src.Converters.Controls.Tabs.SearchTab">
 
     <ContentView.Resources>
         <ResourceDictionary>
-            <converter:JoinIngredientsWithComma
-                x:Key="JoinIngredientsWithComma"/>
+            <converter:JoinIngredientsWithComma x:Key="JoinIngredientsWithComma"/>
+            <converters:Base64ToImageSourceConverter x:Key="Base64ToImage"/>
         </ResourceDictionary>
     </ContentView.Resources>
 
@@ -26,21 +27,32 @@
             HorizontalTextAlignment="Center"
             LineBreakMode="WordWrap"/>
 
-        <VerticalStackLayout
+
+        <HorizontalStackLayout
             Grid.Row="1"
-            Spacing="2"
-            Padding="0,5">
-            <Label
-                Text="Ingredients"
-                FontSize="12"/>
-            <ScrollView
-                HeightRequest="75">
+            Spacing="10"
+            Padding="0,10,0,0">
+            <VerticalStackLayout
+                Spacing="2"
+                Padding="0,5">
                 <Label
-                    Text="{Binding Recipe.Ingredients,
-                 Converter={StaticResource JoinIngredientsWithComma}}"
-                    LineBreakMode="WordWrap"/>
-            </ScrollView>
-        </VerticalStackLayout>
+                    Text="Ingredients"
+                    FontSize="12"/>
+                <ScrollView
+                    HeightRequest="75">
+                    <Label
+                        Text="{Binding Recipe.Ingredients, Converter={StaticResource JoinIngredientsWithComma}}"
+                        LineBreakMode="WordWrap"/>
+                </ScrollView>
+            </VerticalStackLayout>
+            <Image
+                Margin="20"
+                Source="{Binding Recipe.Image.Data, Converter={StaticResource Base64ToImage}}"
+                WidthRequest="137"
+                HeightRequest="85"
+                VerticalOptions="Center"
+                Aspect="AspectFit"/>
+        </HorizontalStackLayout>
 
         <VerticalStackLayout
             Grid.Row="2"

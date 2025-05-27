@@ -34,8 +34,6 @@ namespace AugmentedCooking.src.ViewModels.Controls.Tabs.SearchTab {
             );
         }
 
-        private ContentPage? _currentWindow = null;
-
         partial void OnSearchTextChanged(string value) {
             if (!string.IsNullOrWhiteSpace(value)) {
                 _isFirstFetch = true;
@@ -46,14 +44,21 @@ namespace AugmentedCooking.src.ViewModels.Controls.Tabs.SearchTab {
             }
         }
 
-        private void OnItemClick(object? parameter) {
-            if (parameter != null && parameter is Recipe clickedItem) {
-                // _currentWindow?.close();
+        private Window? _currentWindow = null;
+        private void OnItemClick(Recipe? clickedItem) {
+            if (clickedItem != null) {
+                if (_currentWindow != null) {
+                    Application.Current!.CloseWindow(_currentWindow);
+                    _currentWindow = null;
+                }
 
-                _currentWindow = new RecipeDetailsPage {
-                    BindingContext = new RecipeDetailsViewModel(clickedItem),
+                var detailsPage = new RecipeDetailsPage {
+                    BindingContext = new RecipeDetailsViewModel(clickedItem)
                 };
-                // _currentWindow.Show();
+
+                // _currentWindow = Application.Current!.Windows.FirstOrDefault(w => w is RecipeDetailsPage);
+                _currentWindow = new Window(detailsPage);
+                Application.Current!.OpenWindow(_currentWindow);
             }
         }
 

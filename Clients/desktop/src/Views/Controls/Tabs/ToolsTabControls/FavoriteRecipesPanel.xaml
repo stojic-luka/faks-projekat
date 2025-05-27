@@ -3,47 +3,113 @@
     x:Class="AugmentedCooking.src.Views.Controls.Tabs.ToolsTabControls.FavoriteRecipesPanel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Name="Root">
+    x:Name="Root"
+    BackgroundColor="#171717">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+
+            <!-- Frame around each recipe -->
+            <Style x:Key="RecipeFrameStyle"
+                    TargetType="Frame">
+                <Setter Property="BackgroundColor"
+                        Value="#2C2C2E"/>
+                <Setter Property="BorderColor"
+                        Value="#444444"/>
+                <Setter Property="CornerRadius"
+                        Value="8"/>
+                <Setter Property="HasShadow"
+                        Value="False"/>
+                <Setter Property="Margin"
+                        Value="10"/>
+                <Setter Property="Padding"
+                        Value="10"/>
+            </Style>
+
+            <!-- Title label (name) -->
+            <Style x:Key="TitleLabelStyle"
+                    TargetType="Label">
+                <Setter Property="TextColor"
+                        Value="White"/>
+                <Setter Property="FontSize"
+                        Value="14"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+            </Style>
+
+            <!-- Description label -->
+            <Style x:Key="DescriptionLabelStyle"
+                    TargetType="Label">
+                <Setter Property="TextColor"
+                        Value="LightGray"/>
+                <Setter Property="LineBreakMode"
+                        Value="WordWrap"/>
+            </Style>
+
+            <!-- Remove button -->
+            <Style x:Key="RemoveButtonStyle"
+                    TargetType="Button">
+                <Setter Property="BackgroundColor"
+                        Value="Transparent"/>
+                <Setter Property="TextColor"
+                        Value="White"/>
+            </Style>
+
+        </ResourceDictionary>
+    </ContentView.Resources>
 
     <VerticalStackLayout Padding="10"
-                         Spacing="5">
+            Spacing="5">
 
+        <!-- Header -->
         <Label
             Text="Favorite recipes"
             FontSize="18"
+            TextColor="White"
             Margin="15,5,15,15"/>
 
+        <!-- List -->
         <CollectionView
             ItemsSource="{Binding FavoriteRecipes}"
-            EmptyView="No favorites yet.">
+            BackgroundColor="Transparent">
+
+            <!-- Empty view -->
+            <CollectionView.EmptyView>
+                <Label
+                    Text="No favorites yet."
+                    TextColor="LightGray"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"/>
+            </CollectionView.EmptyView>
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame
-                        Margin="10"
-                        Padding="10"
-                        HasShadow="True"
-                        BorderColor="#DDD">
+                    <Frame Style="{StaticResource RecipeFrameStyle}">
                         <VerticalStackLayout Spacing="5">
 
+                            <!-- Recipe name -->
                             <Label
                                 Text="{Binding Name}"
-                                FontSize="14"
-                                FontAttributes="Bold"/>
+                                Style="{StaticResource TitleLabelStyle}"/>
 
+                            <!-- Description -->
                             <Label
                                 Text="{Binding Description}"
-                                LineBreakMode="WordWrap"/>
+                                Style="{StaticResource DescriptionLabelStyle}"/>
 
+                            <!-- Remove button -->
                             <Button
                                 Text="Remove"
                                 Command="{Binding Source={x:Reference Root}, Path=BindingContext.RemoveRecipeCommand}"
                                 CommandParameter="{Binding .}"
-                                HorizontalOptions="End"/>
+                                HorizontalOptions="End"
+                                Style="{StaticResource RemoveButtonStyle}"/>
 
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+
         </CollectionView>
     </VerticalStackLayout>
 </ContentView>

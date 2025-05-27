@@ -5,12 +5,69 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:AugmentedCooking.src.Converters.Controls.Tabs.SearchTab"
     Title="Recipe Details"
-    BackgroundColor="White">
+    BackgroundColor="#171717">
 
     <ContentPage.Resources>
         <ResourceDictionary>
+
+            <!-- converter stays the same -->
             <converters:Base64ToImageSourceConverter
                 x:Key="Base64ToImageSourceConverter"/>
+
+            <!-- Styles for dark mode -->
+            <Style x:Key="PageLabel"
+                   TargetType="Label">
+                <Setter Property="TextColor"
+                        Value="White"/>
+            </Style>
+
+            <Style x:Key="HeaderLabel"
+                   TargetType="Label"
+                   BasedOn="{StaticResource PageLabel}">
+                <Setter Property="FontSize"
+                        Value="16"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+            </Style>
+
+            <Style x:Key="SectionHeaderLabel"
+                   TargetType="Label"
+                   BasedOn="{StaticResource PageLabel}">
+                <Setter Property="FontSize"
+                        Value="14"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+                <Setter Property="Margin"
+                        Value="0,0,0,5"/>
+            </Style>
+
+            <Style x:Key="ContentLabel"
+                   TargetType="Label"
+                   BasedOn="{StaticResource PageLabel}">
+                <Setter Property="TextColor"
+                        Value="LightGray"/>
+                <Setter Property="LineBreakMode"
+                        Value="WordWrap"/>
+            </Style>
+
+            <Style x:Key="SyncButtonStyle"
+                   TargetType="Button">
+                <Setter Property="BackgroundColor"
+                        Value="Transparent"/>
+                <Setter Property="TextColor"
+                        Value="White"/>
+                <Setter Property="HorizontalOptions"
+                        Value="End"/>
+                <Setter Property="VerticalOptions"
+                        Value="End"/>
+            </Style>
+
+            <Style x:Key="SectionGrid"
+                   TargetType="Grid">
+                <Setter Property="Margin"
+                        Value="0,10,0,10"/>
+            </Style>
+
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -19,53 +76,52 @@
         RowDefinitions="Auto,260,*"
         ColumnDefinitions="*">
 
-        <Grid
-            Grid.Row="0"
-            Margin="0,0,0,10"
-            ColumnDefinitions="*,100">
+        <!-- Title + Sync button row -->
+        <Grid Grid.Row="0"
+              Margin="0,0,0,10"
+              ColumnDefinitions="*,100">
             <Label
                 Grid.Column="0"
                 Text="{Binding Title}"
-                HorizontalOptions="Center"
-                FontSize="16"
-                FontAttributes="Bold"/>
+                Style="{StaticResource HeaderLabel}"
+                HorizontalOptions="Center"/>
             <Button
                 Grid.Column="1"
                 Text="Sync with Glasses"
                 Command="{Binding SyncWithGlassesCommand}"
                 CommandParameter="{Binding Recipe}"
-                HorizontalOptions="End"
-                VerticalOptions="End"/>
+                Style="{StaticResource SyncButtonStyle}"/>
         </Grid>
 
-        <Grid
-            Grid.Row="1"
-            Margin="0,10,0,10"
-            ColumnDefinitions="*,375">
+        <!-- Ingredients + Image row -->
+        <Grid Grid.Row="1"
+              Style="{StaticResource SectionGrid}"
+              ColumnDefinitions="*,375">
             <ScrollView
                 Grid.Column="0"
-                Margin="0,0,10,0">
+                Margin="0,0,10,0"
+                BackgroundColor="Transparent">
                 <Label
                     Text="{Binding Ingredients}"
-                    LineBreakMode="WordWrap"/>
+                    Style="{StaticResource ContentLabel}"/>
             </ScrollView>
             <Image
                 Grid.Column="1"
                 Margin="10"
                 Aspect="AspectFit"
-                Source="{Binding Recipe.Image,
-                 Converter={StaticResource Base64ToImageSourceConverter}}"/>
+                Source="{Binding Recipe.Image, Converter={StaticResource Base64ToImageSourceConverter}}"/>
         </Grid>
 
-        <ScrollView Grid.Row="2">
+        <!-- Instructions -->
+        <ScrollView Grid.Row="2"
+                    BackgroundColor="Transparent">
             <VerticalStackLayout>
                 <Label
                     Text="Instructions:"
-                    FontAttributes="Bold"
-                    Margin="0,0,0,5"/>
+                    Style="{StaticResource SectionHeaderLabel}"/>
                 <Label
                     Text="{Binding Instructions}"
-                    LineBreakMode="WordWrap"/>
+                    Style="{StaticResource ContentLabel}"/>
             </VerticalStackLayout>
         </ScrollView>
 

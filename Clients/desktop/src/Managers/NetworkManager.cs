@@ -72,6 +72,9 @@ public class NetworkManager(HttpClient httpClient, IUserSession userSession) : I
                     "application/json"
                 );
 
+            if (_userSession.IsLoggedIn && !string.IsNullOrWhiteSpace(_userSession.CurrentUser!.AccessToken))
+                request.Headers.Authorization = new("Bearer", _userSession.CurrentUser.AccessToken);
+
             HttpResponseMessage response = await _httpClient.SendAsync(request, ct);
 
             var netStream = await response.Content.ReadAsStreamAsync(ct);

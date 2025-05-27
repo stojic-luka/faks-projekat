@@ -20,6 +20,7 @@ using AugmentedCooking.src.Repositories.ChatRepositories;
 using CommunityToolkit.Maui;
 using AugmentedCooking.src.ViewModels.Controls.Tabs.LoginTab;
 using AugmentedCooking.src.Constants;
+using AugmentedCooking.src.ViewModels.Controls.Tabs.SubmitTab;
 
 namespace AugmentedCooking;
 
@@ -59,6 +60,7 @@ public static class MauiProgram {
         builder.Services.AddSingleton<LoginTabViewModel>();
         builder.Services.AddSingleton<SidebarViewModel>();
         builder.Services.AddTransient<ChatPageViewModel>();
+        builder.Services.AddTransient<SubmitRecipeViewModel>();
         builder.Services.AddTransient<SearchRecipeViewModel>();
         builder.Services.AddTransient<FavoriteRecipesViewModel>();
         builder.Services.AddTransient<RandomRecipeViewModel>();

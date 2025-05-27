@@ -3,15 +3,18 @@
     x:Class="AugmentedCooking.src.Views.Controls.Tabs.ChatPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:helpers="clr-namespace:AugmentedCooking.src.Helpers">
+    xmlns:helpers="clr-namespace:AugmentedCooking.src.Helpers"
+    x:Name="Root"
+    BackgroundColor="#171717">
 
     <Grid RowDefinitions="*,Auto">
+
         <Grid.Resources>
-            <!-- User bubble -->
+            <!-- Dark‐mode user bubble -->
             <DataTemplate x:Key="UserTemplate">
                 <Grid Padding="4">
                     <Frame
-                        BackgroundColor="LightGreen"
+                        BackgroundColor="#2C2C2E"
                         CornerRadius="12"
                         Padding="8"
                         HorizontalOptions="End">
@@ -23,17 +26,17 @@
                 </Grid>
             </DataTemplate>
 
-            <!-- Bot bubble -->
+            <!-- Dark‐mode bot bubble -->
             <DataTemplate x:Key="BotTemplate">
                 <Grid Padding="4">
                     <Frame
-                        BackgroundColor="#333"
+                        BackgroundColor="#333333"
                         CornerRadius="12"
                         Padding="8"
                         HorizontalOptions="Start">
                         <Label
                             Text="{Binding Content.Text}"
-                            TextColor="White"
+                            TextColor="LightGoldenrodYellow"
                             LineBreakMode="WordWrap"/>
                     </Frame>
                 </Grid>
@@ -54,10 +57,12 @@
             <Label
                 Text="Welcome to MeLLama"
                 FontSize="32"
+                TextColor="White"
                 HorizontalOptions="Center"/>
             <Label
                 Text="Your very own cooking AI assistant"
                 FontSize="18"
+                TextColor="LightGray"
                 HorizontalOptions="Center"/>
         </StackLayout>
 
@@ -66,13 +71,16 @@
             x:Name="MessagesView"
             Grid.Row="0"
             ItemsSource="{Binding Messages}"
-            BackgroundColor="Transparent"/>
+            ItemTemplate="{StaticResource ChatSelector}"
+            BackgroundColor="Transparent"
+            Margin="0,0,0,60"/>
 
         <!-- Loading / error -->
         <ActivityIndicator
             Grid.Row="0"
             IsVisible="{Binding IsPendingChat}"
             IsRunning="{Binding IsPendingChat}"
+            Color="White"
             HorizontalOptions="Center"
             VerticalOptions="End"
             Margin="0,0,0,60"/>
@@ -84,28 +92,33 @@
             IsVisible="{Binding IsErrorChat}"
             HorizontalOptions="Center"
             VerticalOptions="End"
-            Margin="0,0,0,40"/>
+            Margin="0,0,0,100"/>
 
         <!-- Input & settings row -->
         <Grid
             Grid.Row="1"
             Padding="8"
-            BackgroundColor="#f4f4f4"
+            BackgroundColor="#1E1E1E"
             ColumnDefinitions="Auto,*,Auto">
+
             <!-- Settings button -->
             <Button
                 Text="⚙"
                 Command="{Binding ToggleSettingsCommand}"
-                WidthRequest="40"/>
+                WidthRequest="40"
+                BackgroundColor="Transparent"
+                TextColor="White"/>
 
             <!-- Text entry -->
             <Editor
                 Grid.Column="1"
                 Text="{Binding InputText}"
                 Placeholder="Message MeLLama"
+                PlaceholderColor="DarkGray"
                 AutoSize="TextChanges"
                 IsEnabled="{Binding IsNotPendingChat}"
-                BackgroundColor="White"
+                BackgroundColor="#2C2C2E"
+                TextColor="White"
                 Margin="8,0"/>
 
             <!-- Send/Abort button -->
@@ -113,7 +126,9 @@
                 Grid.Column="2"
                 Text="{Binding SendButtonIcon}"
                 Command="{Binding SendOrAbortCommand}"
-                WidthRequest="40"/>
+                WidthRequest="40"
+                BackgroundColor="Transparent"
+                TextColor="White"/>
         </Grid>
 
         <!-- Settings overlay -->
@@ -123,36 +138,47 @@
             <Frame
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
-                Padding="16">
+                Padding="16"
+                BackgroundColor="#2C2C2E"
+                CornerRadius="8">
                 <StackLayout Spacing="12">
                     <StackLayout Orientation="Horizontal"
                                  VerticalOptions="Center">
-                        <Label Text="Stream response"
-                               VerticalOptions="Center"/>
-                        <Switch IsToggled="{Binding StreamResponse}"
-                                Margin="8,0,0,0"/>
+                        <Label
+                            Text="Stream response"
+                            TextColor="White"/>
+                        <Switch
+                            IsToggled="{Binding StreamResponse}"
+                            Margin="8,0,0,0"/>
                     </StackLayout>
 
                     <Button
                         Text="Upload image"
-                        Command="{Binding UploadImageCommand}"/>
+                        Command="{Binding UploadImageCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="White"/>
 
                     <Button
                         Text="Clear chat"
-                        Command="{Binding ClearChatCommand}"/>
+                        Command="{Binding ClearChatCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="White"/>
 
                     <StackLayout Orientation="Horizontal"
                                  VerticalOptions="Center">
-                        <Label Text="Model:"
-                               VerticalOptions="Center"/>
+                        <Label
+                            Text="Model:"
+                            TextColor="White"/>
                         <Picker
                             ItemsSource="{Binding AvailableModels}"
                             SelectedItem="{Binding SelectedModel}"
                             WidthRequest="150"
-                            Margin="8,0,0,0"/>
+                            Margin="8,0,0,0"
+                            TextColor="White"/>
                     </StackLayout>
                 </StackLayout>
             </Frame>
         </Grid>
+
     </Grid>
 </ContentView>

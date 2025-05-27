@@ -10,7 +10,6 @@ using CommunityToolkit.Mvvm.Input;
 namespace AugmentedCooking.src.ViewModels.Controls.Tabs.HomeTab;
 
 public partial class ChatPageViewModel : ObservableObject {
-    // injected services
     readonly IChatService _chatService;
     readonly IMessagesService _chatStorage;
     readonly IChatSettingsService _chatSettingsService;
@@ -35,7 +34,7 @@ public partial class ChatPageViewModel : ObservableObject {
 
         Messages.CollectionChanged += (_, __) => OnPropertyChanged(nameof(IsEmpty));
 
-        _ = LoadMessagesAsync();
+        // _ = LoadMessagesAsync();
     }
 
 
@@ -112,7 +111,7 @@ public partial class ChatPageViewModel : ObservableObject {
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         };
         Messages.Add(userMsg);
-        await _chatStorage.AddAsync(userMsg);
+        // await _chatStorage.AddAsync(userMsg);
         ScrollToEndRequested?.Invoke(Messages.Count - 1);
 
         InputText = string.Empty;
@@ -122,6 +121,7 @@ public partial class ChatPageViewModel : ObservableObject {
         try {
             if (StreamResponse) {
                 await foreach (var chunk in _chatService.StreamMessageAsync(userMsg.Content.Text, "", _cts.Token)) {
+                    System.Diagnostics.Debug.WriteLine($"Received chunk: {chunk.Type} - {chunk.Id}");
                     if (chunk.Type == MessageType.STREAMED_METADATA && chunk is AiChatStreamedMetadataResponse metadataChunk) {
                         botRef = new ChatMessage {
                             Id = chunk.Id,
@@ -137,7 +137,7 @@ public partial class ChatPageViewModel : ObservableObject {
                             Timestamp = metadataChunk.Content.Timestamp
                         };
                         Messages.Add(botRef);
-                        await _chatStorage.AddAsync(botRef);
+                        // await _chatStorage.AddAsync(botRef);
                         ScrollToEndRequested?.Invoke(Messages.Count - 1);
                     }
                     else if (botRef is not null) {
@@ -146,7 +146,7 @@ public partial class ChatPageViewModel : ObservableObject {
 
                             var idx = Messages.IndexOf(botRef);
                             Messages[idx] = botRef;
-                            await _chatStorage.UpdateAsync(botRef);
+                            // await _chatStorage.UpdateAsync(botRef);
                         }
                         else if (chunk.Type == MessageType.STREAMED_IMAGE && chunk is AiChatStreamedImageResponse imageChunk) {
                             botRef.Content.Images.Add(new ChatImageContent {
@@ -159,14 +159,14 @@ public partial class ChatPageViewModel : ObservableObject {
 
                             var idx = Messages.IndexOf(botRef);
                             Messages[idx] = botRef;
-                            await _chatStorage.UpdateAsync(botRef);
+                            // await _chatStorage.UpdateAsync(botRef);
                         }
                     }
                 }
 
                 if (botRef is not null) {
                     botRef.Status = MessageStatus.DONE;
-                    await _chatStorage.UpdateAsync(botRef);
+                    // await _chatStorage.UpdateAsync(botRef);
                 }
             }
             else {
@@ -183,7 +183,7 @@ public partial class ChatPageViewModel : ObservableObject {
                 };
                 Messages.Add(done);
                 ScrollToEndRequested?.Invoke(Messages.Count - 1);
-                await _chatStorage.AddAsync(done);
+                // await _chatStorage.AddAsync(done);
             }
         }
         catch (OperationCanceledException) { /* aborted */ }
@@ -192,7 +192,7 @@ public partial class ChatPageViewModel : ObservableObject {
             IsErrorChat = true;
             var errMsg = botRef ?? userMsg;
             errMsg.Status = MessageStatus.ERROR;
-            await _chatStorage.UpdateAsync(errMsg);
+            // await _chatStorage.UpdateAsync(errMsg);
         }
         finally {
             IsPendingChat = false;
@@ -202,24 +202,25 @@ public partial class ChatPageViewModel : ObservableObject {
 
 
 
-    [RelayCommand]
-    async Task ClearChatAsync() {
-        if (!_userSession.IsLoggedIn)
-            return;
+    // [RelayCommand]
+    // async Task ClearChatAsync() {
+    //     if (!_userSession.IsLoggedIn)
+    //         return;
 
-        _cts?.Cancel();
-        Messages.Clear();
-        await _chatStorage.DeleteAllAsync(_userSession.CurrentUser!.Id);
-    }
+    //     _cts?.Cancel();
+    //     Messages.Clear();
+    //     // await _chatStorage.DeleteAllAsync(_userSession.CurrentUser!.Id);
+    // }
 
-    async Task LoadMessagesAsync() {
-        if (!_userSession.IsLoggedIn)
-            return;
+    // async Task LoadMessagesAsync() {
+    //     if (!_userSession.IsLoggedIn)
+    //         return;
 
-        var stored = await _chatStorage.GetAllAsync(_userSession.CurrentUser!.Id);
-        foreach (var m in stored)
-            Messages.Add(m);
+    //     // var stored = await _chatStorage.GetAllAsync(_userSession.CurrentUser!.Id);
+    //     IList<ChatMessage> stored = [];
+    //     foreach (var m in stored)
+    //         Messages.Add(m);
 
-        ScrollToEndRequested?.Invoke(Messages.Count - 1);
-    }
+    //     ScrollToEndRequested?.Invoke(Messages.Count - 1);
+    // }
 }
