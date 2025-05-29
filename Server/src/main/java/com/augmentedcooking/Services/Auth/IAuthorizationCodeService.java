@@ -1,4 +1,4 @@
-package com.augmentedcooking.Utils.base;
+package com.augmentedcooking.Services.Auth;
 
 import com.augmentedcooking.Models.Auth.Oauth2.AuthorizationCode;
 

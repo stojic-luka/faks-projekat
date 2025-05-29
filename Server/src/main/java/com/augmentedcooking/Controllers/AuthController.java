@@ -31,7 +31,7 @@ import com.augmentedcooking.Models.Response.Auth.RefreshResponseBody;
 import com.augmentedcooking.Models.Response.Auth.Dto.TokensDto;
 import com.augmentedcooking.Models.Response.Auth.Dto.UserTokensDto;
 import com.augmentedcooking.Services.Auth.IAuthService;
-import com.augmentedcooking.Utils.base.IAuthorizationCodeService;
+import com.augmentedcooking.Services.Auth.IAuthorizationCodeService;
 import com.augmentedcooking.Utils.impl.JwtUtils;
 import com.augmentedcooking.Utils.impl.ValidationUtils;
 

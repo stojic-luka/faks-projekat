@@ -1,4 +1,4 @@
-package com.augmentedcooking.Utils.impl;
+package com.augmentedcooking.Services.Auth;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.augmentedcooking.Exceptions.Auth.OAuth2Exception;
 import com.augmentedcooking.Models.Auth.Oauth2.AuthorizationCode;
-import com.augmentedcooking.Utils.base.IAuthorizationCodeService;
 
 public class MongoAuthorizationCodeService implements IAuthorizationCodeService {
     private final Map<String, AuthorizationCode> store = new ConcurrentHashMap<>();

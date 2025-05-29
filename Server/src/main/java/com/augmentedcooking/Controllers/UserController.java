@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/self", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllRecipes(UsernamePasswordAuthenticationToken authentication) {
+    public ResponseEntity<?> self(UsernamePasswordAuthenticationToken authentication) {
         Optional<User> user = userService.findUserById(authentication.getName());
         if (user.isEmpty())
             throw new UserNotFoundException();
