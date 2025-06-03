@@ -1,8 +1,14 @@
-FROM continuumio/miniconda3
+FROM python:3.12-slim
+
+RUN useradd --create-home appuser
 WORKDIR /app
-COPY environment.yml ./
-RUN conda env create -f environment.yml
-SHELL ["conda", "run", "-n", "ai_service_env", "/bin/bash", "-c"]
+COPY requirements.txt ./
+
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . .
+USER appuser
+
 EXPOSE 5000
-CMD ["conda", "run", "--no-capture-output", "-n", "ai_service_env", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]   
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]
