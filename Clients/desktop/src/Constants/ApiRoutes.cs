@@ -1,6 +1,6 @@
 namespace AugmentedCooking.src.Constants {
     public static class ApiRoutes {
-        public const string BaseUrl = "http://172.17.232.182:8080";
+        public const string BaseUrl = "http://172.24.133.85:8080";
 
         public static class Auth {
             public const string Login = "/api/v1/auth/login";                                               // POST

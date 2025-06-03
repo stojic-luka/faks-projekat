@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { ChatMessage } from "../../types/chatTypes/chatModels";
 import { useIndexedDB } from "../generic";
-import { IndexedDBConfig } from "../generic/useIndexedDb";
+import { IndexedDBConfig } from "../generic/useIndexedDB";
 
 const config: IndexedDBConfig = {
   dbName: "Chat",
