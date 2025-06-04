@@ -16,8 +16,6 @@ export const AuthProvider = ({ children }: Props) => {
 
   const { data: userData, isError: isErrorUser, refetch: refetchUser } = useFetchUser();
 
-  console.log(user);
-
   const logout = useCallback(() => {
     localStorage.removeItem("token");
     setUser(null);

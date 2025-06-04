@@ -28,8 +28,8 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://user:password@172.17.232.182:27027/recipes?authSource=admin
-      host: 172.17.232.182
+      uri: mongodb://user:password@localhost:27027/recipes?authSource=admin
+      host: localhost
       port: 27027
       username: user
       password: password
@@ -37,7 +37,7 @@ spring:
       authentication-database: admin
 
   rabbitmq:
-    host: 172.17.232.182
+    host: localhost
     port: 5672
     username: user
     password: pass
@@ -64,7 +64,7 @@ jwt:
   #   publicKey: classpath:secret/ecc-refresh-public-512.pem
 
 rabbitmq:
-  rabbitMQHost: 172.17.232.182
+  rabbitMQHost: localhost
   rabbitMQPort: 5672
   rabbitMQUser: user
   rabbitMQPass: pass
