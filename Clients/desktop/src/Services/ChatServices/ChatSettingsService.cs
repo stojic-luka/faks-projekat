@@ -16,14 +16,14 @@ public partial class ChatSettingsService : ObservableObject, IChatSettingsServic
     const string KeyStream = "chat_stream";
     const string KeyModel = "chat_model";
 
-    readonly IList<string> _models = ["gpt-3", "gpt-4"];
+    readonly IList<string> _models = ["llama3.2:3b"];
     public IList<string> AvailableModels => _models;
 
     public event EventHandler<bool> StreamResponseChanged = delegate { };
     public event EventHandler<string> SelectedModelChanged = delegate { };
 
     public ChatSettingsService() {
-        _streamResponse = Preferences.Get(KeyStream, true);
+        _streamResponse = Preferences.Get(KeyStream, false);
         _selectedModel = Preferences.Get(KeyModel, _models[0]);
     }
 

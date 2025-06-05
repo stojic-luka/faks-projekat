@@ -1,6 +1,7 @@
 namespace AugmentedCooking.src.Constants {
     public static class ApiRoutes {
-        public const string BaseUrl = "http://172.24.133.85:8080";
+        // public const string BaseUrl = "http://localhost:8080";
+        public const string BaseUrl = "https://b9c6-188-120-103-233.ngrok-free.app";
 
         public static class Auth {
             public const string Login = "/api/v1/auth/login";                                               // POST

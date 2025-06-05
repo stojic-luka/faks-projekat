@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using AugmentedCooking.src.Models.Recipe;
+using AugmentedCooking.src.Models.Response;
 using AugmentedCooking.src.Services.RecipeServices;
 using AugmentedCooking.src.ViewModels.Windows;
 using AugmentedCooking.src.Views.Windows;
@@ -81,13 +82,13 @@ namespace AugmentedCooking.src.ViewModels.Controls.Tabs.SearchTab {
                 clearingTask.SetResult(true);
 
             Recipe[]? recipes = await _recipeService.GetRecipeByIngredientsAsync(
-                _page,
-                PAGE_LIMIT,
-                [.. SearchText.Split(',')
+                        _page,
+                        PAGE_LIMIT,
+                        [.. SearchText.Split(',')
                     .Select(i => i.Trim())
                     .Where(i => !string.IsNullOrWhiteSpace(i))
-                ]
-            );
+                        ]
+                    );
 
             if (recipes?.Length == 0) {
                 _isLastFetch = true;

@@ -102,12 +102,12 @@
             ColumnDefinitions="Auto,*,Auto">
 
             <!-- Settings button -->
-            <Button
+            <!-- <Button
                 Text="⚙"
                 Command="{Binding ToggleSettingsCommand}"
                 WidthRequest="40"
                 BackgroundColor="Transparent"
-                TextColor="White"/>
+                TextColor="White"/> -->
 
             <!-- Text entry -->
             <Editor
@@ -132,7 +132,7 @@
         </Grid>
 
         <!-- Settings overlay -->
-        <Grid
+        <!-- <Grid
             IsVisible="{Binding IsSettingsVisible}"
             BackgroundColor="#80000000">
             <Frame
@@ -178,7 +178,7 @@
                     </StackLayout>
                 </StackLayout>
             </Frame>
-        </Grid>
+        </Grid> -->
 
     </Grid>
 </ContentView>

@@ -87,7 +87,7 @@ services:
   ollama:
     container_name: Ollama
     image: ollama/ollama:latest
-    pull_policy: if_not_present
+    pull_policy: always
     tty: true
     # mem_limit: "8G"
     # restart: unless-stopped
