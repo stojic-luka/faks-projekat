@@ -130,7 +130,7 @@ npm run dev
 ```bash
 cd Clients/desktop
 dotnet build
-dotnet run -f net7.0-windows
+dotnet run -f net8.0-windows
 ```
 
 ### AI Service
